@@ -19,7 +19,7 @@
   <div class="story-grid" id="story-grid">
     {% for page in remaining %}
     <article class="story-card{% if loop.index > 3 %} story-card--hidden{% endif %}" data-tags="{{ page.extra.tags | default(value=[]) | join(sep=' ') }}">
-      <a href="{{ page.permalink | safe }}" class="story-card-link-overlay" aria-label="{{ page.title }}"></a>
+      <a href="{{ page.path }}" class="story-card-link-overlay" aria-label="{{ page.title }}"></a>
       <img src="/imgs/placeholder.svg" alt="" class="story-card-img">
       <div class="story-card-body">
         <p class="story-card-meta">
@@ -46,34 +46,53 @@
 <script>
   var activeFilter = 'all';
 
+  function cardMatches(card) {
+    if (activeFilter === 'all') return true;
+    var tags = (card.getAttribute('data-tags') || '').split(' ');
+    for (var i = 0; i < tags.length; i++) {
+      if (tags[i] === activeFilter) return true;
+    }
+    return false;
+  }
+
+  function applyFilter() {
+    var cards = document.querySelectorAll('#story-grid .story-card');
+    var shown = 0;
+    for (var i = 0; i < cards.length; i++) {
+      var card = cards[i];
+      card.classList.remove('story-card--hidden');
+      if (cardMatches(card)) {
+        shown++;
+        card.style.display = shown > 3 ? 'none' : '';
+      } else {
+        card.style.display = 'none';
+      }
+    }
+    var loadMore = document.getElementById('load-more-btn');
+    if (loadMore) loadMore.style.display = shown > 3 ? '' : 'none';
+  }
+
   document.getElementById('story-filters').addEventListener('click', function(e) {
     var btn = e.target.closest('.story-filter-btn');
     if (!btn) return;
-    activeFilter = btn.dataset.filter;
-    document.querySelectorAll('.story-filter-btn').forEach(function(b) {
-      b.classList.toggle('is-active', b === btn);
-    });
-    var visible = 0;
-    document.querySelectorAll('#story-grid .story-card').forEach(function(card) {
-      var tags = (card.dataset.tags || '').split(' ');
-      var match = activeFilter === 'all' || tags.indexOf(activeFilter) !== -1;
-      card.classList.toggle('story-card--filtered', !match);
-      if (match) {
-        visible++;
-        card.classList.toggle('story-card--hidden', visible > 3);
-      }
-    });
-    var loadMore = document.getElementById('load-more-btn');
-    if (loadMore) {
-      var hasHidden = document.querySelectorAll('#story-grid .story-card--hidden:not(.story-card--filtered)').length > 0;
-      loadMore.style.display = hasHidden ? '' : 'none';
+    activeFilter = btn.getAttribute('data-filter');
+    var btns = document.querySelectorAll('.story-filter-btn');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].classList.remove('is-active');
     }
+    btn.classList.add('is-active');
+    applyFilter();
   });
 
   function loadMoreStories() {
-    var hidden = Array.from(document.querySelectorAll('#story-grid .story-card--hidden:not(.story-card--filtered)'));
-    hidden.slice(0, 3).forEach(function(card) { card.classList.remove('story-card--hidden'); });
-    if (document.querySelectorAll('#story-grid .story-card--hidden:not(.story-card--filtered)').length === 0) {
+    var cards = Array.from(document.querySelectorAll('#story-grid .story-card--hidden'));
+    var revealed = 0;
+    for (var i = 0; i < cards.length && revealed < 3; i++) {
+      cards[i].classList.remove('story-card--hidden');
+      cards[i].style.display = '';
+      revealed++;
+    }
+    if (!document.querySelectorAll('#story-grid .story-card--hidden').length) {
       document.getElementById('load-more-btn').style.display = 'none';
     }
   }

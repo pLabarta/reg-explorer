@@ -8,7 +8,7 @@
     </div>
     <div class="story-latest-body">
       <h2 class="story-latest-title">
-        <a href="{{ latest.permalink | safe }}">{{ latest.title }}</a>
+        <a href="{{ latest.path }}">{{ latest.title }}</a>
       </h2>
       {% if latest.description %}
       <p class="story-latest-desc">{{ latest.description }}</p>
@@ -17,7 +17,7 @@
         {% if latest.extra.author %}<span>{{ latest.extra.author }}</span>{% endif %}
         {% if latest.extra.read_time %}<span>{{ latest.extra.read_time }}</span>{% endif %}
       </div>
-      <a href="{{ latest.permalink | safe }}" class="btn btn-outline">Read story &rarr;</a>
+      <a href="{{ latest.path }}" class="btn btn-outline">Read story &rarr;</a>
     </div>
   </div>
 </div>
