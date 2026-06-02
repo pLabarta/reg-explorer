@@ -16,3 +16,6 @@
   to     = "https://carolinasregionalexplorer.com/survey/:splat"
   status = 200
   force  = true
+
+[context.deploy-preview]
+command = "zola build --base-url $DEPLOY_PRIME_URL"
