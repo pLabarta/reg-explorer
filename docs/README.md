@@ -28,7 +28,7 @@ The site's content lives in plain text files in this repository. When you save a
 
 | Task | File |
 |---|---|
-| Events, footer, newsletter | `zola.toml` |
+| Events, footer, newsletter, embed URLs | `config.toml` |
 | Page copy (home, about, collaborate) | `content/<page>/_index.md` |
 | Stories | `content/stories/*.md` |
 
@@ -40,10 +40,11 @@ Everything else — nav links, layout, styles — lives in `templates/` and `sas
 
 | What | File |
 |---|---|
-| Site title and base URL | `zola.toml` |
-| Events | `zola.toml` → `extra.events` |
-| Footer text and email | `zola.toml` → `[extra.footer]` |
-| Newsletter | `zola.toml` → `[extra.newsletter]` |
+| Site title and base URL | `config.toml` |
+| Events | `config.toml` → `extra.events` |
+| Footer text and email | `config.toml` → `[extra.footer]` |
+| Newsletter | `config.toml` → `[extra.newsletter]` |
+| Map and survey embed URLs | `config.toml` → `[extra.embeds]` |
 | Home page hero, cards, about strip | `content/_index.md` |
 | About page sections | `content/about/_index.md` |
 | Collaborate cards and CONNECT section | `content/collaborate/_index.md` |

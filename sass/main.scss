@@ -648,6 +648,41 @@ a {
 }
 
 // ---- Story grid (all stories) ----
+.story-grid-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+
+  > .eyebrow { margin-bottom: 0; }
+}
+
+.story-filters {
+  display: flex;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+}
+
+.story-filter-btn {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-family: inherit;
+  color: $text;
+  background: $bg-alt;
+  border: 1px solid $border;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+
+  &:hover { background: $border; }
+  &.is-active { background: $black; color: #fff; border-color: $black; }
+}
+
+.story-card--filtered { display: none; }
+
 .story-grid-section > .eyebrow {
   margin-bottom: 1.25rem;
 }

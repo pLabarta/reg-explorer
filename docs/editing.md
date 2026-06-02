@@ -12,10 +12,10 @@ title       = "Story title"
 date        = 2025-09-01
 description = "One sentence summarising the main finding."
 template    = "story_page.html"
+tags        = ["housing"]
 
 [extra]
 author    = "First Last"
-category  = "Housing"
 read_time = "4 min read"
 +++
 
@@ -27,6 +27,19 @@ More content here.
 ```
 
 The story is live once the file is committed and the site rebuilds.
+
+### Tags
+
+Tags are defined with the `tags` field at the top of the front matter (outside `[extra]`). They must be **lowercase**.
+
+```toml
+tags = ["housing"]
+tags = ["housing", "economy"]   # a story can have multiple tags
+```
+
+Tags power the filter buttons on the Stories page — a new tag appears automatically the first time it's used in any story. There is no list to maintain separately.
+
+Existing tags: `infrastructure`, `economy`, `education`, `housing`, `healthcare`
 
 ### Adding images to a story
 
@@ -175,7 +188,7 @@ Managed site-wide — see [Events](#events) below.
 
 ## Events
 
-File: `zola.toml` → `extra.events`
+File: `config.toml` → `extra.events`
 
 ```toml
 [extra]
@@ -193,7 +206,7 @@ events = [
 
 ## Footer
 
-File: `zola.toml` → `[extra.footer]`
+File: `config.toml` → `[extra.footer]`
 
 ```toml
 [extra.footer]
@@ -214,7 +227,7 @@ Changes here apply to the footer on every page.
 
 ## Newsletter
 
-File: `zola.toml` → `[extra.newsletter]`
+File: `config.toml` → `[extra.newsletter]`
 
 ```toml
 [extra.newsletter]
@@ -222,3 +235,17 @@ eyebrow = "Stay in the loop"
 title   = "Join the newsletter"
 button  = "Subscribe"
 ```
+
+---
+
+## Map and survey embeds
+
+The Regional Map and Wellbeing Survey pages each embed an external application via an `<iframe>`. The URLs are set in `config.toml`:
+
+```toml
+[extra.embeds]
+map    = "https://ui-map-pablitx.netlify.app/?embed=true"
+survey = "https://charlotte-regional-survey-dashboard.streamlit.app/?embed=true"
+```
+
+To point to a different app, replace the URL value. The `?embed=true` parameter is required by both apps — keep it when updating the URL unless the new app uses a different parameter.

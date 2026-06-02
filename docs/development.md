@@ -12,7 +12,7 @@ sass/             styles (compiled automatically by Zola)
   main.scss       main stylesheet and all component styles
   _nav.scss       navigation and header styles
 static/           static assets served as-is (images, fonts)
-zola.toml         site config and shared content (footer, events, newsletter)
+config.toml         site config and shared content (footer, events, newsletter)
 ```
 
 ---
