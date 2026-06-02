@@ -1,0 +1,12 @@
+<div class="section-cards-block">
+  <div class="story-grid">
+    {% for card in section.extra.cards %}
+    <article class="section-nav-card">
+      <div class="section-nav-card-body">
+        <h3 class="section-nav-card-title">{{ card.title }}</h3>
+        <p class="section-nav-card-desc">{{ card.desc }}</p>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</div>

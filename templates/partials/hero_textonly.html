@@ -1,0 +1,23 @@
+<section class="hero hero--textonly">
+  <div class="container">
+    {% if section.extra.hero_eyebrow %}
+    <p class="hero-eyebrow">{{ section.extra.hero_eyebrow }}</p>
+    {% endif %}
+    <div class="hero-inner">
+      <div class="hero-text">
+        <h1>{{ section.extra.hero_title | default(value=section.title) }}</h1>
+      </div>
+      <div class="hero-subtitle">
+        <p class="subtitle">
+          {%- if section.extra.hero_desc -%}{{ section.extra.hero_desc }}
+          {%- elif section.extra.hero_description -%}{{ section.extra.hero_description }}
+          {%- else -%}{{ section.description }}
+          {%- endif -%}
+        </p>
+        {% if section.extra.hero_cta %}
+        <p class="subtitle hero-cta">{{ section.extra.hero_cta | safe }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}{{ section.title }} &mdash; {{ config.title }}{% endblock %}
+{% block description %}{{ section.description }}{% endblock %}
+
+{% block content %}
+{% include "partials/hero_textonly.html" %}
+
+<div class="container">
+  {% if section.content %}
+  <div class="page-content" style="padding-bottom: 0;">
+    {{ section.content | safe }}
+  </div>
+  {% endif %}
+
+  {% if paginator.pages %}
+    {% include "partials/stories/story_latest.html" %}
+    {% include "partials/stories/story_grid.html" %}
+
+  {% else %}
+    <p class="stories-empty">Stories are coming soon. Check back later.</p>
+  {% endif %}
+</div>
+{% endblock %}

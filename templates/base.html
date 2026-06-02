@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ config.title }}{% endblock %}</title>
+  <meta name="description" content="{% block description %}{{ config.description | default(value="") }}{% endblock %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="{{ get_url(path='main.css') }}">
+  {% block head_extra %}{% endblock %}
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <nav class="nav">
+        <a href="/" class="nav-brand">
+          <svg class="nav-logo" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <circle cx="16" cy="16" r="16" fill="#9CA3AF"/>
+          </svg>
+          <span>Reg Explorer</span>
+        </a>
+        <ul class="nav-menu" id="nav-menu">
+          <li>
+            <a href="/map/"
+              {% if current_path == "/map/" %}class="is-active"{% endif %}>
+              Regional map
+            </a>
+          </li>
+          <li>
+            <a href="/survey/"
+              {% if current_path == "/survey/" %}class="is-active"{% endif %}>
+              Wellbeing survey
+            </a>
+          </li>
+          <li>
+            <a href="/stories/"
+              {% if current_path == "/stories/" %}class="is-active"{% endif %}>
+              Data stories
+            </a>
+          </li>
+          <li>
+            <a href="/about/"
+              {% if current_path == "/about/" %}class="is-active"{% endif %}>
+              About
+            </a>
+          </li>
+          <li>
+            <a href="/collaborate/"
+              {% if current_path == "/collaborate/" %}class="is-active"{% endif %}>
+              Collaborate
+            </a>
+          </li>
+        </ul>
+        <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-menu">
+          <span></span><span></span><span></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+
+        <div class="footer-col">
+          <a href="/" class="footer-brand">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="16" cy="16" r="16" fill="#9CA3AF"/>
+            </svg>
+            <span>Reg Explorer</span>
+          </a>
+          <p class="footer-tagline">{{ config.extra.footer.tagline_1 }}</p>
+          <p class="footer-tagline">{{ config.extra.footer.tagline_2 }}</p>
+        </div>
+
+        <div class="footer-col">
+          <p class="eyebrow">Sitemap</p>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/map/">Regional map</a></li>
+            <li><a href="/survey/">Wellbeing survey</a></li>
+            <li><a href="/stories/">Data stories</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/collaborate/">Collaborate</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <p class="eyebrow">Contact</p>
+          <ul class="footer-links">
+            <li><a href="mailto:{{ config.extra.footer.email }}">{{ config.extra.footer.email }}</a></li>
+            <li>{{ config.extra.footer.address }}</li>
+            <li>{{ config.extra.footer.hours }}</li>
+          </ul>
+        </div>
+
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; {{ config.extra.footer.copyright }} &nbsp;&middot;&nbsp; {{ config.extra.footer.credit_text }} <a href="{{ config.extra.footer.credit_link }}">{{ config.extra.footer.credit_label }}</a></p>
+      </div>
+    </div>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+  <script>
+    var btn = document.getElementById('nav-hamburger');
+    var menu = document.getElementById('nav-menu');
+    btn.addEventListener('click', function() {
+      var open = menu.classList.toggle('is-open');
+      btn.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', open);
+    });
+  </script>
+</body>
+</html>

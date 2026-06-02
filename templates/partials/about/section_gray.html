@@ -1,0 +1,11 @@
+<div class="about-section about-section--gray">
+  <div class="container">
+    <p class="eyebrow">{{ eyebrow | default(value="") }}</p>
+    <div class="about-section-inner">
+      <h2 class="about-section-title">{{ title }}</h2>
+      <div class="about-section-body">
+        {{ body | safe }}
+      </div>
+    </div>
+  </div>
+</div>

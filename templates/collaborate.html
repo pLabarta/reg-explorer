@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}{{ section.title }} &mdash; {{ config.title }}{% endblock %}
+{% block description %}{{ section.description }}{% endblock %}
+
+{% block content %}
+{% include "partials/hero_textonly.html" %}
+
+<div class="container">
+  {% include "partials/collaborate/section_cards.html" %}
+</div>
+
+{% include "partials/events.html" %}
+
+{% include "partials/newsletter.html" %}
+
+{% endblock %}

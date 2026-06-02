@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}{{ section.title }} &mdash; {{ config.title }}{% endblock %}
+{% block description %}{{ section.description }}{% endblock %}
+
+{% block content %}
+{% include "partials/hero_textonly.html" %}
+
+{% set eyebrow     = section.extra.sectionA.eyebrow %}
+{% set title_left  = section.extra.sectionA.title_left %}
+{% set body_left   = section.extra.sectionA.body_left %}
+{% set title_right = section.extra.sectionA.title_right %}
+{% set body_right  = section.extra.sectionA.body_right %}
+{% include "partials/about/section_gray_twocol.html" %}
+
+{% set eyebrow = section.extra.sectionB.eyebrow %}
+{% set title   = section.extra.sectionB.title %}
+{% set body    = section.extra.sectionB.body %}
+{% include "partials/about/section_white.html" %}
+
+{% set eyebrow     = section.extra.sectionC.eyebrow %}
+{% set title_left  = section.extra.sectionC.title_left %}
+{% set body_left   = section.extra.sectionC.body_left %}
+{% set title_right = section.extra.sectionC.title_right %}
+{% set body_right  = section.extra.sectionC.body_right %}
+{% include "partials/about/section_gray_twocol.html" %}
+
+{% endblock %}

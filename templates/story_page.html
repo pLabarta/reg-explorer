@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.title }} &mdash; {{ config.title }}{% endblock %}
+{% block description %}{{ page.description | default(value="") }}{% endblock %}
+
+{% block content %}
+{% include "partials/stories/hero_stories.html" %}
+
+<div class="container">
+  <div class="page-content">
+    {{ page.content | safe }}
+  </div>
+</div>
+{% endblock %}

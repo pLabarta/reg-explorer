@@ -1,0 +1,18 @@
+[build]
+  command = "zola build"
+  publish = "public"
+
+[build.environment]
+  ZOLA_VERSION = "0.22.0"
+
+[[redirects]]
+  from   = "https://explorer.carolinasregionalexplorer.com/*"
+  to     = "https://carolinasregionalexplorer.com/map/:splat"
+  status = 200
+  force  = true
+
+[[redirects]]
+  from   = "https://survey.carolinasregionalexplorer.com/*"
+  to     = "https://carolinasregionalexplorer.com/survey/:splat"
+  status = 200
+  force  = true

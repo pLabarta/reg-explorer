@@ -1,0 +1,18 @@
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <h1>{{ section.extra.hero_title | default(value=section.title) }}</h1>
+        <p class="subtitle">{{ section.extra.hero_desc | default(value=section.description) }}</p>
+      </div>
+      <div class="hero-media">
+        <a href="/map/" class="hero-img-link">
+          <img src="{{ section.extra.hero_img }}" alt="{{ section.extra.hero_img_label | default(value='') }}" class="hero-img">
+          {% if section.extra.hero_img_label %}
+          <span class="hero-img-label">{{ section.extra.hero_img_label }}</span>
+          {% endif %}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,16 @@
+<div class="section-cards-block">
+  <div class="story-grid">
+    {% for s in section.extra.sections | slice(end=3) %}
+    <article class="section-nav-card">
+      <a href="/{{ s.slug }}/" class="story-card-link-overlay" aria-label="{{ s.title }}"></a>
+      <div class="section-nav-card-body">
+        <h3 class="section-nav-card-title">{{ s.title }}</h3>
+        <p class="section-nav-card-desc">{{ s.description }}</p>
+      </div>
+      <div class="section-nav-card-footer">
+        <span class="btn btn-outline">{{ s.button }} &rarr;</span>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</div>

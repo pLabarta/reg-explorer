@@ -1,0 +1,31 @@
+.eyebrow {
+  font-family: $font;
+  font-size: 1rem;
+  font-weight: 400;
+  color: $black;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+h1 {
+  font-family: $font-heading;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: $black;
+  line-height: 1.15;
+}
+
+h2, h3, h4 {
+  line-height: 1.25;
+  font-weight: 600;
+  color: $text;
+}
+
+p { margin-bottom: 1rem; }
+
+.subtitle {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: $black;
+  line-height: 1.6;
+}

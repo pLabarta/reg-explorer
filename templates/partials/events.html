@@ -1,0 +1,23 @@
+<div class="about-section about-section--gray">
+  <div class="container">
+    <p class="eyebrow">{{ section.extra.connect.eyebrow }}</p>
+    <div class="about-section-twocol">
+      <div class="about-section-col">
+        <h3 class="about-section-col-title">{{ section.extra.connect.title }}</h3>
+        <div class="about-section-body about-section-body--lg">{{ section.extra.connect.body | safe }}</div>
+      </div>
+      <div class="about-section-col events-col">
+        {% for event in config.extra.events %}
+        <div class="event-item">
+          <h4 class="event-title">{{ event.title }}</h4>
+          <p class="event-date">{{ event.date }}</p>
+          <p class="event-desc">{{ event.description }}</p>
+          {% if event.link %}
+          <a class="event-link" href="{{ event.link }}">{{ event.link_label | default(value="Learn more") }} &rarr;</a>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>

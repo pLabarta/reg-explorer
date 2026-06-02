@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}{{ section.title }} &mdash; {{ config.title }}{% endblock %}
+{% block description %}{{ section.description }}{% endblock %}
+
+{% block content %}
+<div class="survey-embed-wrap">
+  <iframe
+    src="https://charlotte-regional-survey-dashboard.streamlit.app/?embed=true"
+    class="survey-embed"
+    title="Charlotte Regional Survey Dashboard"
+    frameborder="0"
+    allowfullscreen
+  ></iframe>
+</div>
+{% endblock %}

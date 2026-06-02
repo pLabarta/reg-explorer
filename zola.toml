@@ -1,0 +1,37 @@
+base_url = "https://carolinasregionalexplorer.com"
+title = "Carolinas Regional Explorer"
+description = "Data-driven insights for communities across North and South Carolina."
+compile_sass = true
+build_search_index = true
+
+taxonomies = [
+  { name = "tags", feed = true },
+]
+
+[markdown]
+
+[markdown.highlighting]
+theme = "catppuccin-mocha"
+
+[extra]
+events = [
+  { title = "Regional Data Practitioners Meetup", date = "July 10, 2026", description = "An open gathering for researchers, analysts, and civic technologists working with regional data across the Carolinas. Hosted at the UNC Charlotte Urban Institute.", link = "https://example.com/register-meetup", link_label = "Register for the event" },
+  { title = "Data Story Workshop", date = "August 5, 2026", description = "A hands-on session on turning raw datasets into compelling public narratives. Open to collaborators and contributors to the Explorer project.", link = "https://example.com/register-workshop", link_label = "Register for the event" },
+]
+
+[extra.footer]
+tagline_1    = "A short line describing the project mission."
+tagline_2    = "A second line with context about who it serves."
+email        = "hello@carolinasregionalexplorer.com"
+address      = "A line with a physical address or location."
+hours        = "A line with office hours or response time."
+copyright    = "2026 Carolinas Regional Explorer"
+credit_text  = "Built by"
+credit_link  = "/about/"
+credit_label = "the project team"
+
+[extra.newsletter]
+eyebrow = "Stay in the loop"
+title   = "Join the newsletter"
+button  = "Subscribe"
+

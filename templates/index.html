@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}{{ section.title }}{% endblock %}
+{% block description %}{{ section.description }}{% endblock %}
+
+{% block content %}
+{% include "partials/hero_withimage.html" %}
+
+<div class="container">
+  {% include "partials/homepage/section_cards.html" %}
+</div>
+
+{% include "partials/homepage/home_about.html" %}
+{% endblock %}

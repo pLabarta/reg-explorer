@@ -1,0 +1,41 @@
+{% set remaining = paginator.pages | slice(start=1) %}
+{% if remaining %}
+<div class="story-grid-section">
+  <p class="eyebrow">All stories</p>
+  <div class="story-grid" id="story-grid">
+    {% for page in remaining %}
+    <article class="story-card{% if loop.index > 3 %} story-card--hidden{% endif %}">
+      <a href="{{ page.permalink | safe }}" class="story-card-link-overlay" aria-label="{{ page.title }}"></a>
+      <img src="/imgs/placeholder.svg" alt="" class="story-card-img">
+      <div class="story-card-body">
+        <p class="story-card-meta">
+          {% if page.extra.author %}By {{ page.extra.author }}{% endif %}
+          {% if page.extra.author and page.date %}&nbsp;&middot;&nbsp;{% endif %}
+          {% if page.date %}{{ page.date | date(format="%B %d, %Y") }}{% endif %}
+        </p>
+        <h3 class="story-card-title">{{ page.title }}</h3>
+        {% if page.description %}
+        <p class="story-card-desc">{{ page.description }}</p>
+        {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  {% if remaining | length > 3 %}
+  <div class="story-grid-more">
+    <button class="btn btn-outline" id="load-more-btn" onclick="loadMoreStories()">Load more stories</button>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  function loadMoreStories() {
+    const hidden = Array.from(document.querySelectorAll('.story-card--hidden'));
+    hidden.slice(0, 3).forEach(card => card.classList.remove('story-card--hidden'));
+    if (document.querySelectorAll('.story-card--hidden').length === 0) {
+      document.getElementById('load-more-btn').style.display = 'none';
+    }
+  }
+</script>
+{% endif %}

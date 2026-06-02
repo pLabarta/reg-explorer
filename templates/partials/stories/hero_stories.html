@@ -1,0 +1,20 @@
+<section class="hero hero--textonly">
+  <div class="container">
+    <a href="/stories/" class="hero-back-link">&larr; Back to all stories</a>
+    <div class="hero-inner">
+      <div class="hero-text">
+        <h1>{{ page.title }}</h1>
+        {% if page.extra.author or page.date %}
+        <p class="hero-author">
+          {% if page.extra.author %}{{ page.extra.author }}{% endif %}
+          {% if page.extra.author and page.date %} <strong>&middot;</strong> {% endif %}
+          {% if page.date %}{{ page.date | date(format="%B %d, %Y") }}{% endif %}
+        </p>
+        {% endif %}
+      </div>
+      <div class="hero-subtitle">
+        <p class="subtitle">{{ page.description | default(value="") }}</p>
+      </div>
+    </div>
+  </div>
+</section>
