@@ -1,7 +1,7 @@
 +++
-title = "Half of Mecklenburg Renters Are Cost-Burdened. Here's Why It's Getting Worse."
+title = "A compelling headline stating the main housing cost-burden finding for Mecklenburg"
 date = 2024-11-12
-description = "Median rent in Charlotte has risen 38% since 2019 while median renter income grew just 11%. A look at the data behind the region's affordability crisis and the policy levers that remain."
+description = "A one or two sentence summary of the story's key finding — what the data shows about rent growth versus income growth, and what it means for renters in the region."
 template = "story_page.html"
 tags = ["housing"]
 
