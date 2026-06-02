@@ -1,5 +1,11 @@
 # Development
 
+- [Project structure](#project-structure)
+- [Adding a new page/section](#adding-a-new-pagesection)
+- [Available partials](#available-partials)
+- [Styles](#styles)
+- [Deploying](#deploying)
+
 ---
 
 ## Project structure

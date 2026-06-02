@@ -1,5 +1,14 @@
 # Editing Content
 
+- [Writing a story](#writing-a-story)
+- [Home page](#home-page)
+- [About page](#about-page)
+- [Collaborate page](#collaborate-page)
+- [Events](#events)
+- [Footer](#footer)
+- [Newsletter](#newsletter)
+- [Map and survey embeds](#map-and-survey-embeds)
+
 ---
 
 ## Writing a story
