@@ -15,6 +15,7 @@ template    = "story_page.html"
 tags        = ["housing"]
 
 [extra]
+tags      = ["housing"]
 author    = "First Last"
 read_time = "4 min read"
 +++
@@ -30,14 +31,25 @@ The story is live once the file is committed and the site rebuilds.
 
 ### Tags
 
-Tags are defined with the `tags` field at the top of the front matter (outside `[extra]`). They must be **lowercase**.
+Tags are defined at the top of the front matter (outside `[extra]`) and must be **lowercase**. They also need to be mirrored inside `[extra]` so the Stories page filter can read them:
 
 ```toml
-tags = ["housing"]
-tags = ["housing", "economy"]   # a story can have multiple tags
+tags = ["housing"]          # top-level: used by Zola's taxonomy system
+
+[extra]
+tags = ["housing"]          # mirrored: used by the filter UI on the Stories page
 ```
 
-Tags power the filter buttons on the Stories page — a new tag appears automatically the first time it's used in any story. There is no list to maintain separately.
+A story can have multiple tags:
+
+```toml
+tags = ["housing", "economy"]
+
+[extra]
+tags = ["housing", "economy"]
+```
+
+A new filter button appears automatically the first time a tag is used — no list to maintain separately.
 
 Existing tags: `infrastructure`, `economy`, `education`, `housing`, `healthcare`
 

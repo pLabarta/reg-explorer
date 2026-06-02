@@ -8,11 +8,16 @@
 content/          page content and stories (Markdown + TOML front matter)
 templates/        Zola/Tera HTML templates
   partials/       reusable layout blocks included by page templates
+  tags/           taxonomy templates (list.html, single.html)
 sass/             styles (compiled automatically by Zola)
-  main.scss       main stylesheet and all component styles
+  main.scss       main stylesheet — all component styles
   _nav.scss       navigation and header styles
+  _headings.scss  heading styles
+  _layout.scss    layout utilities
 static/           static assets served as-is (images, fonts)
-config.toml         site config and shared content (footer, events, newsletter)
+docs/             project documentation
+config.toml       site config and shared content (footer, events, newsletter)
+netlify.toml      Netlify build config and redirect rules
 ```
 
 ---
@@ -72,7 +77,11 @@ In `templates/base.html`, add a new `<li>` inside `.nav-menu` following the exis
 </li>
 ```
 
-Also add the link to the footer sitemap in the same file.
+Also add a link to the footer sitemap in the same file. Find the `footer-links` list under the "Sitemap" eyebrow and add a `<li>`:
+
+```html
+<li><a href="/resources/">Resources</a></li>
+```
 
 ### 4. (Optional) Add to the home page cards
 
@@ -115,12 +124,18 @@ All component styles live in `sass/main.scss`. Navigation styles are in `sass/_n
 Token variables (colours, spacing, fonts) are defined at the top of `main.scss`:
 
 ```scss
-$accent:  #004d35;
-$black:   #000000;
-$text:    #1a202c;
-$bg:      #ffffff;
-$bg-alt:  #f5f7fa;
-$border:  #e2e8f0;
+$accent:        #004d35;   // primary green
+$accent-dark:   #004d35;   // darker variant for hover states
+$accent-light:  #e8f0fb;   // light tint for backgrounds
+$black:         #000000;
+$text:          #1a202c;   // body text
+$text-muted:    #718096;   // secondary/muted text
+$border:        #e2e8f0;
+$bg:            #ffffff;   // page background
+$bg-alt:        #f5f7fa;   // alternate section background (gray sections)
+$max-w:         1100px;    // max content width
+$font:          'Inter', -apple-system, sans-serif;
+$font-heading:  'Inter', -apple-system, sans-serif;
 ```
 
 ---
