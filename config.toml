@@ -35,3 +35,7 @@ eyebrow = "Stay in the loop"
 title   = "Join the newsletter"
 button  = "Subscribe"
 
+[extra.embeds]
+map    = "https://ui-map-pablitx.netlify.app/?embed=true"
+survey = "https://charlotte-regional-survey-dashboard.streamlit.app/?embed=true"
+
