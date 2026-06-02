@@ -3,10 +3,11 @@ title = "A story title about rural healthcare access across two lines"
 date = 2024-10-03
 description = "A short description summarising the story's main finding about healthcare access in rural counties."
 template = "story_page.html"
+tags = ["healthcare"]
 
 [extra]
+tags = ["healthcare"]
 author = "Author Name"
-category = "Healthcare"
 read_time = "5 min read"
 +++
 

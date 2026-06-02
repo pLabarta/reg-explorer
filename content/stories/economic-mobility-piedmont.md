@@ -3,10 +3,11 @@ title = "A story title about economic mobility in the Piedmont region"
 date = 2024-08-27
 description = "A short description summarising the story's main finding about income mobility and economic opportunity."
 template = "story_page.html"
+tags = ["economy"]
 
 [extra]
+tags = ["economy"]
 author = "Author Name"
-category = "Economy"
 read_time = "6 min read"
 +++
 

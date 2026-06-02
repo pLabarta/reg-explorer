@@ -1,10 +1,24 @@
 {% set remaining = paginator.pages | slice(start=1) %}
 {% if remaining %}
 <div class="story-grid-section">
-  <p class="eyebrow">All stories</p>
+  <div class="story-grid-header">
+    <p class="eyebrow">All stories</p>
+    <div class="story-filters" id="story-filters">
+      <button class="story-filter-btn is-active" data-filter="all">All</button>
+      {% set seen = [] %}
+      {% for page in paginator.pages %}
+        {% for tag in page.extra.tags | default(value=[]) %}
+          {% if tag not in seen %}
+            {% set_global seen = seen | concat(with=tag) %}
+            <button class="story-filter-btn" data-filter="{{ tag }}">{{ tag }}</button>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
   <div class="story-grid" id="story-grid">
     {% for page in remaining %}
-    <article class="story-card{% if loop.index > 3 %} story-card--hidden{% endif %}">
+    <article class="story-card{% if loop.index > 3 %} story-card--hidden{% endif %}" data-tags="{{ page.extra.tags | default(value=[]) | join(sep=' ') }}">
       <a href="{{ page.permalink | safe }}" class="story-card-link-overlay" aria-label="{{ page.title }}"></a>
       <img src="/imgs/placeholder.svg" alt="" class="story-card-img">
       <div class="story-card-body">
@@ -30,10 +44,36 @@
 </div>
 
 <script>
+  var activeFilter = 'all';
+
+  document.getElementById('story-filters').addEventListener('click', function(e) {
+    var btn = e.target.closest('.story-filter-btn');
+    if (!btn) return;
+    activeFilter = btn.dataset.filter;
+    document.querySelectorAll('.story-filter-btn').forEach(function(b) {
+      b.classList.toggle('is-active', b === btn);
+    });
+    var visible = 0;
+    document.querySelectorAll('#story-grid .story-card').forEach(function(card) {
+      var tags = (card.dataset.tags || '').split(' ');
+      var match = activeFilter === 'all' || tags.indexOf(activeFilter) !== -1;
+      card.classList.toggle('story-card--filtered', !match);
+      if (match) {
+        visible++;
+        card.classList.toggle('story-card--hidden', visible > 3);
+      }
+    });
+    var loadMore = document.getElementById('load-more-btn');
+    if (loadMore) {
+      var hasHidden = document.querySelectorAll('#story-grid .story-card--hidden:not(.story-card--filtered)').length > 0;
+      loadMore.style.display = hasHidden ? '' : 'none';
+    }
+  });
+
   function loadMoreStories() {
-    const hidden = Array.from(document.querySelectorAll('.story-card--hidden'));
-    hidden.slice(0, 3).forEach(card => card.classList.remove('story-card--hidden'));
-    if (document.querySelectorAll('.story-card--hidden').length === 0) {
+    var hidden = Array.from(document.querySelectorAll('#story-grid .story-card--hidden:not(.story-card--filtered)'));
+    hidden.slice(0, 3).forEach(function(card) { card.classList.remove('story-card--hidden'); });
+    if (document.querySelectorAll('#story-grid .story-card--hidden:not(.story-card--filtered)').length === 0) {
       document.getElementById('load-more-btn').style.display = 'none';
     }
   }

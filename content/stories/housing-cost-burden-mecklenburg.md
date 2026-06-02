@@ -3,10 +3,11 @@ title = "Half of Mecklenburg Renters Are Cost-Burdened. Here's Why It's Getting 
 date = 2024-11-12
 description = "Median rent in Charlotte has risen 38% since 2019 while median renter income grew just 11%. A look at the data behind the region's affordability crisis and the policy levers that remain."
 template = "story_page.html"
+tags = ["housing"]
 
 [extra]
+tags = ["housing"]
 author = "Author Name"
-category = "Housing"
 read_time = "6 min read"
 +++
 

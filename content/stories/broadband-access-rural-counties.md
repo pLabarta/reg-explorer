@@ -3,10 +3,11 @@ title = "A story title about broadband access in rural counties spanning two lin
 date = 2024-07-15
 description = "A short description summarising the story's main finding about internet access and its effect on rural communities."
 template = "story_page.html"
+tags = ["infrastructure"]
 
 [extra]
+tags = ["infrastructure"]
 author = "Author Name"
-category = "Infrastructure"
 read_time = "5 min read"
 +++
 

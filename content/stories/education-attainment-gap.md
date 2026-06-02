@@ -3,10 +3,11 @@ title = "A story title about the education attainment gap spanning two lines"
 date = 2024-09-18
 description = "A short description summarising the story's main finding about education outcomes across the region."
 template = "story_page.html"
+tags = ["education"]
 
 [extra]
+tags = ["education"]
 author = "Author Name"
-category = "Education"
 read_time = "7 min read"
 +++
 
