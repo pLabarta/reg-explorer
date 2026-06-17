@@ -10,5 +10,16 @@
   {% include "partials/homepage/section_cards.html" %}
 </div>
 
+{% set about_data = section.extra.section_about %}
 {% include "partials/homepage/home_about.html" %}
+
+{% set two_images_imgs = section.extra.two_images | default(value=[]) %}
+{% include "partials/two_images.html" %}
+
+{% set about_data = section.extra.section_cta %}
+{% set about_bg = "accent" %}
+{% include "partials/homepage/home_about.html" %}
+
+{% set three_images_imgs = section.extra.three_images | default(value=[]) %}
+{% include "partials/three_images.html" %}
 {% endblock %}

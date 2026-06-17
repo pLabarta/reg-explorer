@@ -1,0 +1,10 @@
+{# General-use partial: full-bleed band — left half is one image, right half is two stacked images.
+   Caller sets `three_images_imgs` to a list of three image paths before including; falls back to placeholders. #}
+{% set imgs = three_images_imgs | default(value=[]) %}
+<section class="three-images">
+  <img class="three-images-img three-images-img--single" src="{{ imgs[0] | default(value='/imgs/placeholder.svg') }}" alt="">
+  <div class="three-images-stack">
+    <img class="three-images-img" src="{{ imgs[1] | default(value='/imgs/placeholder.svg') }}" alt="">
+    <img class="three-images-img" src="{{ imgs[2] | default(value='/imgs/placeholder.svg') }}" alt="">
+  </div>
+</section>

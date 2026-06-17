@@ -19,6 +19,8 @@ A paragraph presenting the core data: how median rent has changed since 2019, ho
 
 A second paragraph contextualising the numbers — how Mecklenburg compares to neighboring counties or national benchmarks.
 
+{{ line_chart(data_file="example-line-chart.json") }}
+
 ## A section heading describing policy responses or contributing factors
 
 A paragraph examining the factors driving the trend — new construction patterns, income inequality, or displacement pressures — with supporting data points.

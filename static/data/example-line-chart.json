@@ -1,0 +1,10 @@
+{
+  "title": "A county name",
+  "subtitle": "A short sentence describing the trend,",
+  "highlight": "a highlighted value",
+  "prefix": "$",
+  "min_label": "$3,000",
+  "max_label": "$80,000",
+  "x": [2010, 2015, 2020, 2025],
+  "y": [3000, 3000, 3050, 3100, 3300, 3800, 9000, 22000, 42000, 56000, 63000, 69000, 73000, 76000, 78000, 80000]
+}

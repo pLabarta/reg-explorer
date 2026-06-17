@@ -1,27 +1,54 @@
 .eyebrow {
   font-family: $font;
-  font-size: 1rem;
-  font-weight: 400;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
   color: $black;
   text-transform: uppercase;
   margin-bottom: 0.75rem;
 }
 
-h1 {
+h1, h2, h3, h4, h5, h6 {
   font-family: $font-heading;
-  font-size: 2.5rem;
-  font-weight: 600;
-  color: $black;
-  line-height: 1.15;
-}
-
-h2, h3, h4 {
-  line-height: 1.25;
-  font-weight: 600;
+  font-weight: 500;
   color: $text;
 }
 
+.display { font-size: 54px; line-height: 62px; color: $black; }
+h1 { font-size: 34px; line-height: 1.25; }
+h2 { font-size: 26px; line-height: 1.25; }
+h3 { font-size: 20px; line-height: 1.25; }
+h4 { font-size: 18px; line-height: 1.25; }
+h5 { font-size: 16px; line-height: 1.25; }
+h6 { font-size: 14px; line-height: 1.25; }
+
 p { margin-bottom: 1rem; }
+
+.small {
+  font-family: $font;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+// Scribble underline behind/below a word in Display or heading text.
+.scribble {
+  position: relative;
+  z-index: 0;
+  display: inline-block;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: -0.05em;
+    right: -0.05em;
+    bottom: -0.13em;
+    height: 0.45em;
+    background: url('/vectors/scrible-underline.svg') no-repeat center;
+    background-size: 100% 100%;
+    z-index: -1;
+  }
+}
 
 .subtitle {
   font-size: 1.2rem;

@@ -1,0 +1,10 @@
+{# General-use partial: two half-width image columns that break out beyond the container (full-bleed).
+   Caller sets `two_images_imgs` to a list of two image paths before including; falls back to placeholders. #}
+{% set imgs = two_images_imgs | default(value=[]) %}
+<section class="two-images">
+  {% for i in range(end=2) %}
+  <div class="two-images-col">
+    <img class="two-images-img" src="{{ imgs[i] | default(value='/imgs/placeholder.svg') }}" alt="">
+  </div>
+  {% endfor %}
+</section>

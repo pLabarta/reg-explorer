@@ -1,12 +1,17 @@
-<div class="home-about-wrap">
+{# Reusable "about"-style section. Caller may set:
+   - `about_data`: object with eyebrow/title/body/link/link_label (defaults to section.extra.section_about)
+   - `about_bg`:   background modifier — "accent", "paper", or "" (default warm-gray-light) #}
+{% set data = about_data | default(value=section.extra.section_about) %}
+{% set bg = about_bg | default(value="") %}
+<div class="home-about-wrap{% if bg %} home-about-wrap--{{ bg }}{% endif %}">
   <div class="container">
     <div class="home-about">
-      <p class="eyebrow">{{ section.extra.section_about.eyebrow }}</p>
+      <p class="eyebrow">{{ data.eyebrow }}</p>
       <div class="home-about-inner">
-        <h2 class="home-about-title">{{ section.extra.section_about.title }}</h2>
+        <h2 class="home-about-title">{{ data.title }}</h2>
         <div class="home-about-body">
-          <p>{{ section.extra.section_about.body }}</p>
-          <a href="{{ section.extra.section_about.link }}" class="home-about-link">{{ section.extra.section_about.link_label }} &rarr;</a>
+          <p>{{ data.body }}</p>
+          <a href="{{ data.link }}" class="inline-link inline-link--plain">{{ data.link_label }}<span class="inline-link-arrow">→</span></a>
         </div>
       </div>
     </div>

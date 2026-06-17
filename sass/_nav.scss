@@ -20,12 +20,12 @@
   gap: 0.5rem;
   font-weight: 700;
   font-size: 0.9375rem;
-  color: $text;
+  color: $warm-gray;
   text-decoration: none;
   white-space: nowrap;
   flex-shrink: 0;
 
-  &:hover { color: $accent; text-decoration: none; }
+  &:hover { color: $warm-gray; text-decoration: none; }
 
   .nav-logo { display: block; flex-shrink: 0; }
 }
@@ -43,12 +43,20 @@
     font-size: 0.9375rem;
     padding: 0.375rem 0.75rem;
     border-radius: 0.375rem;
-    text-decoration: none;
     white-space: nowrap;
-    transition: color 0.15s, background 0.15s;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 6px;
+    text-decoration-skip-ink: none;
+    text-underline-offset: -1px;
+    transition: color 0.15s, text-decoration-color 0.25s ease;
 
-    &:hover { color: $black; background: $bg-alt; text-decoration: none; }
-    &.is-active { color: $accent; font-weight: 500; }
+    &:hover { color: $black; text-decoration-color: $accent; }
+    &.is-active {
+      color: $black;
+      font-weight: 500;
+      text-decoration-color: $accent;
+    }
   }
 
   .nav-cta {

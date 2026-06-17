@@ -1,14 +1,16 @@
 <div class="section-cards-block">
+  <p class="eyebrow">Explore the region through</p>
   <div class="story-grid">
     {% for s in section.extra.sections | slice(end=3) %}
     <article class="section-nav-card">
       <a href="/{{ s.slug }}/" class="story-card-link-overlay" aria-label="{{ s.title }}"></a>
       <div class="section-nav-card-body">
-        <h3 class="section-nav-card-title">{{ s.title }}</h3>
+        <span class="section-nav-card-number">0{{ loop.index }}</span>
+        <h2 class="section-nav-card-title">{{ s.title }}</h2>
         <p class="section-nav-card-desc">{{ s.description }}</p>
       </div>
       <div class="section-nav-card-footer">
-        <span class="btn btn-outline">{{ s.button }} &rarr;</span>
+        <a href="/{{ s.slug }}/" class="inline-link">{{ s.button }}<span class="inline-link-arrow">→</span></a>
       </div>
     </article>
     {% endfor %}

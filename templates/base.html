@@ -7,7 +7,7 @@
   <meta name="description" content="{% block description %}{{ config.description | default(value="") }}{% endblock %}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="/main.css">
   {% block head_extra %}{% endblock %}
 </head>
@@ -17,7 +17,7 @@
       <nav class="nav">
         <a href="/" class="nav-brand">
           <svg class="nav-logo" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <circle cx="16" cy="16" r="16" fill="#9CA3AF"/>
+            <circle cx="16" cy="16" r="16" fill="#ACA493"/>
           </svg>
           <span>Reg Explorer</span>
         </a>
@@ -75,8 +75,8 @@
             </svg>
             <span>Reg Explorer</span>
           </a>
-          <p class="footer-tagline">{{ config.extra.footer.tagline_1 }}</p>
-          <p class="footer-tagline">{{ config.extra.footer.tagline_2 }}</p>
+          <p class="footer-tagline small">{{ config.extra.footer.tagline_1 }}</p>
+          <p class="footer-tagline small">{{ config.extra.footer.tagline_2 }}</p>
         </div>
 
         <div class="footer-col">
