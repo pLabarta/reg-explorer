@@ -1,0 +1,36 @@
+name: Set up Quarto story toolchain
+description: >
+  Install the toolchain build-stories.sh needs: Quarto CLI, R, the system
+  geospatial libraries for sf, and the R packages the stories load.
+
+runs:
+  using: composite
+  steps:
+    # sf links against these system libraries; install them before the R packages.
+    - name: Install system geospatial libraries (sf)
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgdal-dev libgeos-dev libproj-dev libudunits2-dev
+
+    # use-public-rspm pulls precompiled package binaries on Ubuntu (much faster than source).
+    - name: Set up R
+      uses: r-lib/actions/setup-r@v2
+      with:
+        use-public-rspm: true
+
+    - name: Set up Quarto
+      uses: quarto-dev/quarto-actions/setup@v2
+
+    # Mirrors the package list in Installing-quarto.md (knitr + plotly baseline plus the
+    # economic-mobility story's tidyverse/scales/leaflet/leaflet.extras/sf dependencies).
+    - name: Install R packages
+      shell: Rscript {0}
+      run: |
+        pkgs <- c("knitr", "plotly", "tidyverse", "scales",
+                  "leaflet", "leaflet.extras", "sf")
+        install.packages(pkgs)
+        missing <- pkgs[!pkgs %in% rownames(installed.packages())]
+        if (length(missing)) {
+          stop("Failed to install R packages: ", paste(missing, collapse = ", "))
+        }

@@ -1,0 +1,21 @@
+project:
+  type: default
+  # Render output lands in Zola's static dir → served at /quarto/<slug>/
+  output-dir: ../static/quarto
+  # Run each story's code from its own folder so folder-local data/ paths resolve.
+  execute-dir: file
+
+execute:
+  freeze: auto      # cache R results in quarto/_freeze/ — commit this, skip re-running code
+  echo: false       # data story: hide code, show output
+  warning: false
+  message: false
+
+format:
+  html:
+    # Lean output: no Bootstrap/Quarto chrome, no theme CSS — the story is embedded
+    # as a fragment into the Zola quarto_story.html page, which provides chrome + tokens.
+    minimal: true
+    embed-resources: true       # inline plotly/htmlwidgets so the fragment is self-contained
+    toc: false
+    anchor-sections: false

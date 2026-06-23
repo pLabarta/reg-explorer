@@ -1,0 +1,22 @@
+{# Quarto data story page.
+
+   The story body is authored in quarto/stories/<slug>[/index].qmd and rendered by
+   `scripts/build-stories.sh` to a lean, self-contained HTML fragment at
+   static/quarto/stories/<slug>.fragment.html (inlined plotly/htmlwidgets, no chrome).
+   This page embeds that fragment inside the real site shell (base.html → nav + footer),
+   so a Quarto story is a normal /stories/<slug>/ page styled with the site's tokens. #}
+{% extends "base.html" %}
+
+{% block title %}{{ page.title }} &mdash; {{ config.title }}{% endblock %}
+{% block description %}{{ page.description | default(value="") }}{% endblock %}
+
+{% block content %}
+<article class="page-content container quarto-story">
+  {% set fragment = load_data(path="static/quarto/stories/" ~ page.slug ~ ".fragment.html", format="plain", required=false) %}
+  {% if fragment %}
+    {{ fragment | safe }}
+  {% else %}
+    <p>This story has not been rendered yet. Run <code>scripts/build-stories.sh</code> to build it.</p>
+  {% endif %}
+</article>
+{% endblock %}

@@ -3,27 +3,9 @@
 // ============================================================
 
 // ---- Tokens (UI.md design system) ----
-// Palette
-$black:            #0D0D0D;
-$white:            #FFFFFF;
-$paper:            #F7F4ED;
-$warm-gray-dark:   #8A857A;
-$warm-gray:        #ACA493;
-$warm-gray-light:  #E2DDD2;
-$accent-dark:      #003509;
-$accent:           #DBFF85;
-$accent-light:     #D7EBBA;
-
-// Semantic aliases (legacy names mapped onto the palette)
-$text:         $black;
-$text-muted:   $warm-gray-dark;
-$border:       $warm-gray-light;
-$bg:           $white;
-$bg-alt:       $paper;
-
-$max-w:        1280px;
-$font:         'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-$font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+// Defined in sass/_tokens.scss — the single source of truth for the palette/fonts.
+@import 'tokens';
+@import 'mixins';
 
 // ---- Reset ----
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -451,18 +433,12 @@ a {
   font-size: 1rem;
   font-weight: 600;
   color: $black;
-  text-decoration: underline;
-  text-decoration-color: $accent;
-  text-decoration-thickness: 6px;
-  text-decoration-skip-ink: none;
-  text-underline-offset: -1px;
+  @include accent-underline;
 
+  // Re-assert on hover to out-specify the global `a:hover` underline reset.
   &:hover {
     color: $black;
-    text-decoration-color: $accent;
-    text-decoration-thickness: 6px;
-    text-decoration-skip-ink: none;
-    text-underline-offset: -1px;
+    @include accent-underline;
   }
 }
 
@@ -508,10 +484,7 @@ a {
   background: $bg;
   transition: border-color 0.2s, box-shadow 0.2s;
 
-  &:hover {
-    border-color: $accent;
-    box-shadow: 0 0 0 3px $accent-light;
-  }
+  &:hover { @include accent-ring; }
 
   &-title {
     font-size: 1.0625rem;
@@ -632,20 +605,37 @@ a {
 
     &:focus {
       outline: none;
-      border-color: $accent;
-      box-shadow: 0 0 0 3px $accent-light;
+      @include accent-ring;
     }
   }
 
   textarea { resize: vertical; min-height: 120px; }
 }
 
+// ---- Quarto story (embedded fragment) ----
+.quarto-story {
+  // Frame computational figures like the line_chart shortcode.
+  figure,
+  .cell-output-display { @include paper-panel; }
+
+  figure img,
+  .cell-output-display img { margin: 0 auto; }
+
+  figcaption,
+  .figure-caption {
+    font-family: $font;
+    font-size: 12px;
+    color: $warm-gray-dark;
+    margin-top: 0.75rem;
+    text-align: center;
+  }
+
+  .js-plotly-plot { width: 100%; }
+}
+
 // ---- Shortcode: line_chart ----
 .line-chart {
-  background: $paper;
-  border-radius: 8px;
-  padding: 2.5rem 2rem;
-  margin: 2rem 0;
+  @include paper-panel(2.5rem 2rem);
   text-align: center;
 }
 
@@ -860,10 +850,7 @@ a {
   transition: border-color 0.2s, box-shadow 0.2s;
   cursor: pointer;
 
-  &:hover {
-    border-color: $accent;
-    box-shadow: 0 0 0 3px $accent-light;
-  }
+  &:hover { @include accent-ring; }
 
   &--hidden { display: none; }
 }

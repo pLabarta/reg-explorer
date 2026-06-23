@@ -1,0 +1,12 @@
+# AUTO-GENERATED from sass/_tokens.scss by scripts/build-stories.sh — do not edit.
+black <- "#0D0D0D"
+white <- "#FFFFFF"
+paper <- "#F7F4ED"
+warm_gray_dark <- "#8A857A"
+warm_gray <- "#ACA493"
+warm_gray_light <- "#E2DDD2"
+accent_dark <- "#003509"
+accent <- "#DBFF85"
+accent_light <- "#D7EBBA"
+font <- "'Archivo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif"
+font_heading <- "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
