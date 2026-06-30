@@ -1,8 +1,15 @@
 name: Validate stories
 
-# Render the Quarto stories from scratch to prove they build. Commits nothing — this
-# is the gate for pull requests into main, and is reused by render-stories.yml before
-# it auto-commits on push.
+# Render the Quarto stories from scratch to prove they build.
+#
+# On pull requests this also force-commits the rendered output (static/quarto/) back
+# to the PR branch so the Netlify deploy preview — which only runs `zola build` and
+# can't render Quarto itself — can serve the stories. static/quarto/ is gitignored, so
+# the commit uses `git add -f`; pushes made with the default GITHUB_TOKEN don't
+# re-trigger workflows, so this doesn't loop.
+#
+# When reused via workflow_call (by render-stories.yml on push to main) it's
+# validation only and commits nothing — the preview step is gated to pull_request.
 
 on:
   pull_request:
@@ -13,16 +20,41 @@ on:
       - 'sass/_tokens.scss'
   workflow_call:
 
+# Allow the PR preview step to push the rendered fragments back to the PR branch.
+permissions:
+  contents: write
+
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Check out the PR branch (not the detached merge ref) so the preview
+          # fragments can be committed back to it. Empty for workflow_call/push,
+          # where checkout falls back to the triggering ref.
+          ref: ${{ github.head_ref }}
 
       - name: Set up Quarto story toolchain
         uses: ./.github/actions/setup-stories
 
       # --force drops the freeze cache so every story re-executes its R from scratch;
       # build-stories.sh runs with `set -euo pipefail`, so any render error fails the job.
-      - name: Render stories (validation only)
+      - name: Render stories
         run: scripts/build-stories.sh --force
+
+      # PR only: publish the rendered output to the branch for the Netlify preview.
+      - name: Commit story previews
+        if: github.event_name == 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # static/quarto/ is gitignored — force-add so the Netlify deploy preview
+          # (plain `zola build`) has the rendered fragments to serve.
+          git add -f static/quarto
+          if git diff --staged --quiet; then
+            echo "No story preview changes to commit."
+          else
+            git commit -m "ci: render story previews"
+            git push
+          fi
