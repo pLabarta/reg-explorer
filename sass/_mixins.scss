@@ -14,7 +14,7 @@
 
 // Accent focus/hover ring — cards and form inputs.
 @mixin accent-ring {
-  border-color: $accent;
+  border-color: $accent-light;
   box-shadow: 0 0 0 3px $accent-light;
 }
 

@@ -24,7 +24,7 @@ body {
 img { max-width: 100%; display: block; }
 
 a {
-  color: $accent;
+  color: $accent-dark;
   text-decoration: none;
   &:hover { text-decoration: underline; }
 }
@@ -33,6 +33,7 @@ a {
 @import 'headings';
 @import 'layout';
 @import 'nav';
+@import 'scrolly';
 
 // ---- Hero ----
 .hero {
@@ -147,10 +148,10 @@ a {
   border: none;
 
   &-primary {
-    background: $accent;
-    color: #fff;
+    background: $accent-light;
+    color: $accent-dark;
 
-    &:hover { background: $accent-dark; text-decoration: none; color: #fff; }
+    &:hover { background: $accent; text-decoration: none; color: $accent-dark; }
   }
 
   &-outline {
@@ -339,7 +340,7 @@ a {
   border-radius: 4px;
   outline: none;
 
-  &:focus { border-color: $accent; }
+  &:focus { border-color: $accent-light; }
 }
 
 @media (max-width: 768px) {
@@ -351,7 +352,7 @@ a {
 .home-about-wrap {
   background: $warm-gray-light;
 
-  &--accent { background: $accent; }
+  &--accent { background: $accent-light; }
   &--paper { background: $paper; }
 }
 
@@ -387,7 +388,7 @@ a {
 .home-about-link {
   font-size: 0.9375rem;
   font-weight: 500;
-  color: $accent;
+  color: $accent-dark;
 
   &:hover { text-decoration: underline; }
 }
@@ -503,7 +504,7 @@ a {
   &-link {
     font-size: 0.875rem;
     font-weight: 500;
-    color: $accent;
+    color: $accent-dark;
 
     &:hover { text-decoration: underline; }
   }
@@ -526,7 +527,40 @@ a {
 
   ul, ol { padding-left: 1.5rem; margin-bottom: 1rem; }
   li { margin-bottom: 0.375rem; }
-  a { color: $accent; }
+  a { color: $accent-dark; }
+
+  blockquote {
+    background: $paper;
+    border-left: 3px solid $accent-dark;
+    border-radius: 0 6px 6px 0;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+
+    > :first-child { margin-top: 0; }
+    > :last-child { margin-bottom: 0; }
+  }
+
+  // Bibliography rendered by Quarto (<div id="refs" class="references">).
+  // Labelled and given reading typography so it isn't a dangling, unstyled list.
+  .references {
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: $text-muted;
+
+    &::before {
+      content: 'References';
+      display: block;
+      font-family: $font-heading;
+      font-size: 1.375rem;
+      font-weight: 600;
+      color: $text;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid $border;
+    }
+
+    .csl-entry { margin-bottom: 0.75rem; }
+  }
 }
 
 // ---- Full-width placeholder ----
@@ -759,7 +793,7 @@ a {
   line-height: 1.25;
   margin: 0;
 
-  a { color: $text; &:hover { color: $accent; text-decoration: none; } }
+  a { color: $text; &:hover { color: $accent-dark; text-decoration: none; } }
 }
 
 .story-latest-desc {
