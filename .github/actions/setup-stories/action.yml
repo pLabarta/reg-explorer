@@ -22,15 +22,40 @@ runs:
     - name: Set up Quarto
       uses: quarto-dev/quarto-actions/setup@v2
 
+    # Resolve the user library path + R version so the cache key tracks the ABI:
+    # packages built for one R minor version aren't reused by another.
+    - name: Resolve R library path
+      id: rlib
+      shell: Rscript {0}
+      run: |
+        out <- Sys.getenv("GITHUB_OUTPUT")
+        cat(sprintf("dir=%s\n", .libPaths()[1]), file = out, append = TRUE)
+        cat(sprintf("ver=%s.%s\n", R.version$major, R.version$minor), file = out, append = TRUE)
+
+    # Cache the installed R packages. The key includes this action.yml's hash, so
+    # editing the package list below invalidates the cache; restore-keys lets an
+    # older cache seed the library so only newly added packages get installed.
+    - name: Cache R packages
+      uses: actions/cache@v4
+      with:
+        path: ${{ steps.rlib.outputs.dir }}
+        key: ${{ runner.os }}-R${{ steps.rlib.outputs.ver }}-rpkgs-${{ hashFiles('.github/actions/setup-stories/action.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-R${{ steps.rlib.outputs.ver }}-rpkgs-
+
     # Mirrors the package list in Installing-quarto.md (knitr + plotly baseline plus the
     # economic-mobility story's tidyverse/scales/leaflet/leaflet.extras/sf dependencies).
+    # Only missing packages are installed, so a cache hit skips the slow rebuild.
     - name: Install R packages
       shell: Rscript {0}
       run: |
         pkgs <- c("knitr", "plotly", "tidyverse", "scales",
                   "leaflet", "leaflet.extras", "sf")
-        install.packages(pkgs)
         missing <- pkgs[!pkgs %in% rownames(installed.packages())]
         if (length(missing)) {
-          stop("Failed to install R packages: ", paste(missing, collapse = ", "))
+          install.packages(missing)
+        }
+        still_missing <- pkgs[!pkgs %in% rownames(installed.packages())]
+        if (length(still_missing)) {
+          stop("Failed to install R packages: ", paste(still_missing, collapse = ", "))
         }

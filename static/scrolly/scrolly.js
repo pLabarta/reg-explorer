@@ -30,8 +30,12 @@
   // children (<strong>, <span>, text) onto separate lines.
   const scenes = content.map(el => {
     const scene = document.createElement('div');
+    // Figure scenes get a wider reading column (the Plotly map needs more room
+    // than the 720px prose column); end scene is the full-bleed footer card.
+    const isFig = !!el.querySelector('[id^="fig-"]') || /^fig-/.test(el.id || '');
     scene.className = 'scrolly-scene' +
-      (el.matches('.scrolly-end') ? ' scrolly-scene--end' : '');
+      (el.matches('.scrolly-end') ? ' scrolly-scene--end' :
+        isFig ? ' scrolly-scene--fig' : '');
     story.insertBefore(scene, el);
     scene.appendChild(el);
     return scene;

@@ -47,6 +47,12 @@
   max-width: 720px;
 }
 
+// Figures (e.g. the Plotly map) need more room than the prose column, so give
+// figure scenes a wider container — still bounded so it doesn't span the stage.
+.scrolly-scene--fig > * {
+  max-width: 900px;
+}
+
 // ---- End card (final scene; reuses the site footer partial) ----
 // The scene wrapper fills the stage edge-to-edge; coloring it dark matches the
 // included .site-footer so the headline area and footer read as one panel.
