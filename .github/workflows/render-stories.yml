@@ -4,8 +4,8 @@ name: Render & publish stories
 # then re-render and commit the version-controlled build outputs back to main.
 #
 # Committed outputs are the durable ones only:
-#   - quarto/_freeze/        the freeze cache (lets later renders skip the R runtime)
-#   - quarto/_tokens.R       generated from sass/_tokens.scss
+#   - quarto/_freeze/        the freeze cache (lets later renders skip the R/Python runtime)
+#   - quarto/_tokens.R/.py   generated from sass/_tokens.scss
 #   - content/stories/*.md   auto-generated Zola companion stubs
 # static/quarto/ is intentionally gitignored (reproducible from _freeze/), so it is not
 # committed here — see the note in .gitignore.
@@ -43,7 +43,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add quarto/_freeze quarto/_tokens.R content/stories
+          git add quarto/_freeze quarto/_tokens.R quarto/_tokens.py content/stories
           if git diff --staged --quiet; then
             echo "No story output changes to commit."
           else

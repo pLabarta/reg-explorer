@@ -1,7 +1,8 @@
 name: Set up Quarto story toolchain
 description: >
   Install the toolchain build-stories.sh needs: Quarto CLI, R, the system
-  geospatial libraries for sf, and the R packages the stories load.
+  geospatial libraries for sf, the R packages the stories load, and Python
+  with the packages jupyter-engine stories import (quarto/requirements.txt).
 
 runs:
   using: composite
@@ -21,6 +22,19 @@ runs:
 
     - name: Set up Quarto
       uses: quarto-dev/quarto-actions/setup@v2
+
+    # Python toolchain for jupyter-engine stories. setup-python's built-in pip cache
+    # is keyed on quarto/requirements.txt, so edits to the package list invalidate it.
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+        cache: pip
+        cache-dependency-path: quarto/requirements.txt
+
+    - name: Install Python packages
+      shell: bash
+      run: python -m pip install -r quarto/requirements.txt
 
     # Resolve the user library path + R version so the cache key tracks the ABI:
     # packages built for one R minor version aren't reused by another.

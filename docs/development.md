@@ -149,14 +149,16 @@ for the current values.
 
 ## Data stories (Quarto)
 
-Data stories are authored in [Quarto](https://quarto.org/) (`.qmd`) under `quarto/stories/`,
-rendered to lean HTML fragments, and embedded into the Zola site at `/stories/<slug>/`. For
-how to bring a story into the site (folder layout, front matter, data paths), see
-[quarto.md](quarto.md).
+Data stories are authored in [Quarto](https://quarto.org/) (`.qmd`, in R or Python) under
+`quarto/stories/`, rendered to lean HTML fragments, and embedded into the Zola site at
+`/stories/<slug>/`. For how to bring a story into the site (folder layout, front matter,
+data paths), see [quarto.md](quarto.md).
 
 ### Installing the toolchain
 
-You only need this if you're rendering stories locally — most content work doesn't touch Quarto.
+You only need this if you're rendering stories locally — most content work doesn't touch
+Quarto. Steps 2–3 (R) are only needed to render R stories; step 4 (Python) only for
+Python stories.
 
 **1. Install the Quarto CLI** — see https://quarto.org/docs/get-started/
 
@@ -195,10 +197,24 @@ Rscript -e 'install.packages(c("tidyverse", "scales", "leaflet", "leaflet.extras
 sudo apt install -y libgdal-dev libgeos-dev libproj-dev libudunits2-dev
 ```
 
-**4. Verify**
+**4. Install Python (for Python stories)**
+
+Quarto runs Python through the jupyter engine. Create a venv at the repo root
+(gitignored) and install the pinned story packages:
 
 ```bash
-quarto check knitr   # check the knitr engine
+python3 -m venv .venv
+.venv/bin/pip install -r quarto/requirements.txt
+```
+
+Activate it (`source .venv/bin/activate`) before running `build-stories.sh` so Quarto
+picks up the venv's kernel.
+
+**5. Verify**
+
+```bash
+quarto check knitr     # check the knitr engine (R stories)
+quarto check jupyter   # check the jupyter engine (Python stories; activate the venv first)
 Rscript -e 'library(plotly); cat("plotly", as.character(packageVersion("plotly")), "ready\n")'
 ```
 

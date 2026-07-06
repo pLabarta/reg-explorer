@@ -39,6 +39,7 @@ jobs:
 
       # Keep story sources lean: a single story folder must stay under 20 MB.
       # Runs before the toolchain install so an oversized folder fails fast.
+      # .githooks/pre-commit enforces the same limit locally — keep them in sync.
       - name: Check story folder sizes
         shell: bash
         run: |
@@ -78,7 +79,7 @@ jobs:
           # that changed re-executes once, and committing its new freeze means the next
           # run reuses it instead of re-executing and producing a fresh random ID — so a
           # given content state converges to one commit, then stays quiet.
-          git add quarto/_freeze quarto/_tokens.R content/stories
+          git add quarto/_freeze quarto/_tokens.R quarto/_tokens.py content/stories
           # static/quarto/ is gitignored — force-add so the Netlify deploy preview
           # (plain `zola build`) has the rendered fragments to serve.
           git add -f static/quarto

@@ -36,6 +36,6 @@ title   = "Join our newsletter"
 button  = "Sign up"
 
 [extra.embeds]
-map    = "https://ui-map-pablitx.netlify.app/?embed=true"
-survey = "https://charlotte-regional-survey-dashboard.streamlit.app/?embed=true"
+map    = "https://crxp.netlify.app/explore/"
+survey = "https://charlotteregionalwellbeing.netlify.app/"
 

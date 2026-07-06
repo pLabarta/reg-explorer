@@ -13,10 +13,11 @@
 #   scripts/build-stories.sh <slug>      # render a single story (quarto/stories/<slug>[/index].qmd)
 #   scripts/build-stories.sh --force     # bust the freeze cache: re-execute & overwrite ALL
 #   scripts/build-stories.sh --force <slug>   # force re-render of just that story
-#   scripts/build-stories.sh --check     # verify quarto/_tokens.R matches sass/_tokens.scss
-#                                          (writes nothing, renders nothing; exit 1 if drifted)
+#   scripts/build-stories.sh --check     # verify quarto/_tokens.R and quarto/_tokens.py match
+#                                          sass/_tokens.scss (writes/renders nothing; exit 1 if drifted)
 #
-# Requires the Quarto CLI + R (knitr/plotly) — see Installing-quarto.md.
+# Requires the Quarto CLI + R (knitr/plotly) for R stories, and Python with the packages in
+# quarto/requirements.txt (jupyter/plotly) for Python stories — see Installing-quarto.md.
 # Rendering uses the committed quarto/_freeze/ cache, so a story's code only re-runs
 # when its .qmd changes (freeze: auto in _quarto.yml). --force drops that cache so the
 # code re-executes from scratch, and overwrites rendered output, fragments, and stubs.
@@ -58,44 +59,60 @@ if [ "$CHECK" -ne 1 ]; then
   fi
 fi
 
-# Derive the R token assignments from sass/_tokens.scss (single source of truth) → stdout.
+# Derive the token assignments from sass/_tokens.scss (single source of truth) → stdout.
+#   $1 = target language: "r" (_tokens.R) or "py" (_tokens.py)
 tokens_expected() {
-  python3 - "$ROOT_DIR/sass/_tokens.scss" <<'PY'
+  python3 - "$ROOT_DIR/sass/_tokens.scss" "$1" <<'PY'
 import re, sys
 src = open(sys.argv[1]).read()
+lang = sys.argv[2]
+assign, vec_open, vec_close = ("<-", "c(", ")") if lang == "r" else ("=", "[", "]")
 out = ["# AUTO-GENERATED from sass/_tokens.scss by scripts/build-stories.sh — do not edit.\n"]
 for name, val in re.findall(r"^\$([a-z0-9-]+):\s*(.+?);", src, re.M):
-    rname = name.replace("-", "_")
-    if val.startswith("#"):
-        out.append(f'{rname} <- "{val}"\n')
+    tname = name.replace("-", "_")
+    if name.startswith("viz-"):
+        # Data-viz palette: emit the list of hex colors as an R vector / Python list.
+        colors = re.findall(r"#[0-9A-Fa-f]{3,8}", val)
+        vec = ", ".join(f'"{c}"' for c in colors)
+        out.append(f'{tname} {assign} {vec_open}{vec}{vec_close}\n')
+    elif val.startswith("#"):
+        out.append(f'{tname} {assign} "{val}"\n')
     elif name in ("font", "font-heading"):
         v = val.replace('"', '\\"')
-        out.append(f'{rname} <- "{v}"\n')
+        out.append(f'{tname} {assign} "{v}"\n')
 sys.stdout.write("".join(out))
 PY
 }
 
-# Write quarto/_tokens.R from the SCSS tokens so stories share one source of truth for the
-# palette/fonts (R can't read the CSS at render time). _setup.R sources it.
+# Write quarto/_tokens.R and quarto/_tokens.py from the SCSS tokens so stories share one
+# source of truth for the palette/fonts (neither runtime can read the CSS at render time).
+# _setup.R sources the R file; _setup.py imports the Python one.
 generate_tokens() {
-  echo "Generating quarto/_tokens.R from sass/_tokens.scss ..."
-  tokens_expected > "$QUARTO_DIR/_tokens.R"
+  echo "Generating quarto/_tokens.R and quarto/_tokens.py from sass/_tokens.scss ..."
+  tokens_expected r  > "$QUARTO_DIR/_tokens.R"
+  tokens_expected py > "$QUARTO_DIR/_tokens.py"
 }
 
-# Verify quarto/_tokens.R matches sass/_tokens.scss without writing. Returns 1 if drifted.
+# Verify the generated token files match sass/_tokens.scss without writing. Returns 1 if drifted.
 check_tokens() {
-  echo "Checking quarto/_tokens.R is in sync with sass/_tokens.scss ..."
-  if [ ! -f "$QUARTO_DIR/_tokens.R" ]; then
-    echo "  OUT OF SYNC: quarto/_tokens.R is missing (run scripts/build-stories.sh to generate it)." >&2
-    return 1
-  fi
-  if diff -u "$QUARTO_DIR/_tokens.R" <(tokens_expected) >/dev/null; then
-    echo "  in sync."
-    return 0
-  fi
-  echo "  OUT OF SYNC: quarto/_tokens.R differs from sass/_tokens.scss:" >&2
-  diff -u "$QUARTO_DIR/_tokens.R" <(tokens_expected) >&2 || true
-  return 1
+  local status=0 lang file
+  for lang in r py; do
+    file="_tokens.R"; [ "$lang" = "py" ] && file="_tokens.py"
+    echo "Checking quarto/$file is in sync with sass/_tokens.scss ..."
+    if [ ! -f "$QUARTO_DIR/$file" ]; then
+      echo "  OUT OF SYNC: quarto/$file is missing (run scripts/build-stories.sh to generate it)." >&2
+      status=1
+      continue
+    fi
+    if diff -u "$QUARTO_DIR/$file" <(tokens_expected "$lang") >/dev/null; then
+      echo "  in sync."
+    else
+      echo "  OUT OF SYNC: quarto/$file differs from sass/_tokens.scss:" >&2
+      diff -u "$QUARTO_DIR/$file" <(tokens_expected "$lang") >&2 || true
+      status=1
+    fi
+  done
+  return "$status"
 }
 
 # Read a value from a .qmd's YAML front matter (first ---...--- block). Strips quotes.
@@ -153,7 +170,24 @@ body = re.search(r"<body[^>]*>(.*?)</body>", src, re.S)
 # Keep the inlined deps (styles/scripts) from <head>; drop meta/title/base/link chrome.
 deps = "".join(re.findall(r"<style.*?</style>|<script.*?</script>", head.group(1) if head else "", re.S))
 inner = body.group(1) if body else src
-open(sys.argv[2], "w", encoding="utf-8").write(deps + "\n" + inner)
+out = deps + "\n" + inner
+
+# Dedupe repeated large inline <script> blocks. plotly.py embeds a full copy of
+# plotly.js in every figure's output (unlike R htmlwidgets, which shares one), so a
+# multi-figure Python story inlines the same ~5 MB library N times. Byte-identical
+# script blocks are pure duplicates (the library just redefines itself), so keep the
+# first and drop the rest. Figure payloads differ per figure and are untouched.
+seen = set()
+def dedupe(m):
+    block = m.group(0)
+    if len(block) > 100_000:
+        if block in seen:
+            return ""
+        seen.add(block)
+    return block
+out = re.sub(r"<script[^>]*>.*?</script>", dedupe, out, flags=re.S)
+
+open(sys.argv[2], "w", encoding="utf-8").write(out)
 PY
 }
 

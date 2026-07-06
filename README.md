@@ -31,6 +31,9 @@ No technical setup needed. Content is edited in plain text files and published b
 ```bash
 # Install Zola — https://www.getzola.org/documentation/getting-started/installation/
 
+# Enable the repo's git hooks (blocks oversized story folders at commit time)
+git config core.hooksPath .githooks
+
 # Preview locally
 zola serve
 # open http://127.0.0.1:1111
