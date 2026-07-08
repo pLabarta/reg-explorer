@@ -1,0 +1,69 @@
+---
+title: "A title describing the data story"
+description: "A one-or-two sentence summary of what the analysis shows."
+date: 2026-06-18
+author: "Author Name"
+---
+
+```{r}
+#| label: setup
+# Shared tokens (generated from sass/_tokens.scss) + zola_style() plotly theme.
+source(file.path(Sys.getenv("QUARTO_PROJECT_DIR"), "_setup.R"))
+```
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua — an opening paragraph introducing
+the story's question and why it matters. Ut enim ad minim veniam, quis nostrud
+exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+
+## A section heading describing the trend over time
+
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.
+The chart below uses **synthetic placeholder data**, not real regional figures.
+
+```{r}
+#| label: fig-line
+#| fig-cap: "A caption describing what this line chart would show"
+set.seed(1)
+line_df <- data.frame(
+  index = 1:12,
+  value = cumsum(c(20, rnorm(11, mean = 4, sd = 6)))  # synthetic series — not real data
+)
+
+plot_ly(line_df, x = ~index, y = ~value,
+        type = "scatter", mode = "lines+markers",
+        line = list(color = accent_dark, width = 3),
+        marker = list(color = accent_dark, size = 7)) |>
+  zola_style(ytitle = "A measured value", xtitle = "Time period")
+```
+
+A paragraph interpreting the (placeholder) trend, in lorem ipsum. Excepteur sint
+occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim.
+
+## A section heading comparing categories
+
+Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
+doloremque laudantium, totam rem aperiam. The bar chart below also uses
+**synthetic placeholder data**.
+
+```{r}
+#| label: fig-bar
+#| fig-cap: "A caption describing what this bar chart would show"
+bar_df <- data.frame(
+  category = factor(c("Category A", "Category B", "Category C",
+                      "Category D", "Category E"),
+                    levels = c("Category A", "Category B", "Category C",
+                               "Category D", "Category E")),
+  value = c(38, 52, 29, 47, 33)  # synthetic values — not real data
+)
+
+plot_ly(bar_df, x = ~category, y = ~value, type = "bar",
+        marker = list(color = accent_dark)) |>
+  zola_style(ytitle = "A measured value", xtitle = "")
+```
+
+A closing paragraph describing what the comparison suggests, in lorem ipsum.
+
+::: {.callout-note}
+A short callout describing a caveat or the data source for this story.
+:::

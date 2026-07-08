@@ -1,5 +1,12 @@
 # Editing Content
 
+_Last updated: 2026-06-23_
+
+> **Who this is for:** content editors and writers. No coding required — you edit plain-text
+> files, and the site rebuilds itself when your changes are saved to GitHub. Covers page
+> copy, stories, and events.
+
+- [Publishing & preview](#publishing--preview)
 - [Writing a story](#writing-a-story)
 - [Home page](#home-page)
 - [About page](#about-page)
@@ -11,9 +18,29 @@
 
 ---
 
+## Publishing & preview
+
+Your edits go live by saving them to the `main` branch on GitHub: Netlify then rebuilds and
+publishes the site automatically, usually within a couple of minutes. There's no separate
+"publish" button — committing and pushing your changes *is* publishing.
+
+- **Publish:** commit your changed files and push to `main` (or merge a pull request).
+- **Preview first (optional):** run `zola serve` locally, or open a pull request and use the
+  Netlify preview link to see your changes before they go live.
+
+New to Git, or want the exact commands? See [Deploying](deploying.md).
+
+---
+
 ## Writing a story
 
-Create `content/stories/your-story-slug.md`:
+This covers a standard hand-written Markdown story. For a **Quarto data story** with
+live charts, maps, or tables generated from analysis code (R/Python) see [Authoring a Quarto data story](quarto.md).
+
+Create a file at `content/stories/your-story-slug.md`. The block at the top — between the
+`+++` lines — is the story's **front matter**: its settings, like title, date, and tags. The
+`[extra]` section within it holds a few more fields the page uses, such as author and read
+time. Everything below the closing `+++` is the story text, written in Markdown:
 
 ```toml
 +++
@@ -43,7 +70,7 @@ The story is live once the file is committed and the site rebuilds.
 Tags are defined at the top of the front matter (outside `[extra]`) and must be **lowercase**. They also need to be mirrored inside `[extra]` so the Stories page filter can read them:
 
 ```toml
-tags = ["housing"]          # top-level: used by Zola's taxonomy system
+tags = ["housing"]          # top-level: powers each tag's own listing page
 
 [extra]
 tags = ["housing"]          # mirrored: used by the filter UI on the Stories page

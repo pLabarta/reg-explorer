@@ -1,0 +1,91 @@
+name: Validate stories
+
+# Render the Quarto stories (via the committed freeze cache) to prove they build.
+#
+# On pull requests this also commits the rendered output back to the PR branch so the
+# Netlify deploy preview — which only runs `zola build` and can't render Quarto itself —
+# can serve the stories. static/quarto/ is gitignored, so its fragments are force-added;
+# the freeze cache + stubs are tracked and committed normally. Pushes made with the
+# default GITHUB_TOKEN don't re-trigger workflows, so this doesn't loop. Because the
+# render reuses the freeze cache (no --force), unchanged stories produce byte-identical
+# output and therefore no repeat commits.
+#
+# When reused via workflow_call (by render-stories.yml on push to main) it's
+# validation only and commits nothing — the preview step is gated to pull_request.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'quarto/**'
+      - 'scripts/build-stories.sh'
+      - 'sass/_tokens.scss'
+  workflow_call:
+
+# Allow the PR preview step to push the rendered fragments back to the PR branch.
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Check out the PR branch (not the detached merge ref) so the preview
+          # fragments can be committed back to it. Empty for workflow_call/push,
+          # where checkout falls back to the triggering ref.
+          ref: ${{ github.head_ref }}
+
+      # Keep story sources lean: a single story folder must stay under 20 MB.
+      # Runs before the toolchain install so an oversized folder fails fast.
+      # .githooks/pre-commit enforces the same limit locally — keep them in sync.
+      - name: Check story folder sizes
+        shell: bash
+        run: |
+          limit_kb=$((20 * 1024))
+          fail=0
+          shopt -s nullglob
+          for dir in quarto/stories/*/; do
+            size_kb=$(du -sk "$dir" | cut -f1)
+            size_mb=$(awk "BEGIN { printf \"%.1f\", $size_kb / 1024 }")
+            if [ "$size_kb" -gt "$limit_kb" ]; then
+              echo "::error::Story folder '$dir' is ${size_mb} MB, over the 20 MB limit."
+              fail=1
+            else
+              echo "OK: '$dir' is ${size_mb} MB."
+            fi
+          done
+          exit $fail
+
+      - name: Set up Quarto story toolchain
+        uses: ./.github/actions/setup-stories
+
+      # Render from the committed freeze cache (NOT --force): freeze: auto re-executes
+      # only the stories whose source changed, so unchanged stories reuse their frozen
+      # HTML verbatim. This keeps htmlwidget element IDs (and other render-time random
+      # bits) stable across runs, so re-runs don't produce a churn of preview commits.
+      # build-stories.sh runs with `set -euo pipefail`, so any render error fails the job.
+      - name: Render stories
+        run: scripts/build-stories.sh
+
+      # PR only: publish the rendered output to the branch for the Netlify preview.
+      - name: Commit story previews
+        if: github.event_name == 'pull_request'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Commit the regenerated freeze cache + stubs too (these are tracked): a story
+          # that changed re-executes once, and committing its new freeze means the next
+          # run reuses it instead of re-executing and producing a fresh random ID — so a
+          # given content state converges to one commit, then stays quiet.
+          git add quarto/_freeze quarto/_tokens.R quarto/_tokens.py content/stories
+          # static/quarto/ is gitignored — force-add so the Netlify deploy preview
+          # (plain `zola build`) has the rendered fragments to serve.
+          git add -f static/quarto
+          if git diff --staged --quiet; then
+            echo "No story preview changes to commit."
+          else
+            git commit -m "ci: render story previews"
+            git push
+          fi

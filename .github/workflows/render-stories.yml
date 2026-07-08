@@ -1,0 +1,54 @@
+name: Render & publish stories
+
+# On pushes to main that touch the stories: validate first (reusing validate-stories.yml),
+# then re-render and commit the version-controlled build outputs back to main.
+#
+# Committed outputs are the durable ones only:
+#   - quarto/_freeze/        the freeze cache (lets later renders skip the R/Python runtime)
+#   - quarto/_tokens.R/.py   generated from sass/_tokens.scss
+#   - content/stories/*.md   auto-generated Zola companion stubs
+# static/quarto/ is intentionally gitignored (reproducible from _freeze/), so it is not
+# committed here — see the note in .gitignore.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'quarto/**'
+      - 'scripts/build-stories.sh'
+      - 'sass/_tokens.scss'
+
+# Allow the workflow to push the regenerated outputs back to main.
+permissions:
+  contents: write
+
+jobs:
+  # Reuse the PR validation workflow as a hard gate before anything is committed.
+  validate:
+    uses: ./.github/workflows/validate-stories.yml
+
+  render:
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Quarto story toolchain
+        uses: ./.github/actions/setup-stories
+
+      - name: Render stories
+        run: scripts/build-stories.sh --force
+
+      - name: Commit regenerated outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add quarto/_freeze quarto/_tokens.R quarto/_tokens.py content/stories
+          if git diff --staged --quiet; then
+            echo "No story output changes to commit."
+          else
+            # Pushes made with the default GITHUB_TOKEN do not re-trigger workflows,
+            # so committing files under quarto/** here will not loop back into this job.
+            git commit -m "ci: rebuild Quarto stories"
+            git push
+          fi

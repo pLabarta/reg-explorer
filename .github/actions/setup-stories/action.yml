@@ -1,0 +1,75 @@
+name: Set up Quarto story toolchain
+description: >
+  Install the toolchain build-stories.sh needs: Quarto CLI, R, the system
+  geospatial libraries for sf, the R packages the stories load, and Python
+  with the packages jupyter-engine stories import (quarto/requirements.txt).
+
+runs:
+  using: composite
+  steps:
+    # sf links against these system libraries; install them before the R packages.
+    - name: Install system geospatial libraries (sf)
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgdal-dev libgeos-dev libproj-dev libudunits2-dev
+
+    # use-public-rspm pulls precompiled package binaries on Ubuntu (much faster than source).
+    - name: Set up R
+      uses: r-lib/actions/setup-r@v2
+      with:
+        use-public-rspm: true
+
+    - name: Set up Quarto
+      uses: quarto-dev/quarto-actions/setup@v2
+
+    # Python toolchain for jupyter-engine stories. setup-python's built-in pip cache
+    # is keyed on quarto/requirements.txt, so edits to the package list invalidate it.
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+        cache: pip
+        cache-dependency-path: quarto/requirements.txt
+
+    - name: Install Python packages
+      shell: bash
+      run: python -m pip install -r quarto/requirements.txt
+
+    # Resolve the user library path + R version so the cache key tracks the ABI:
+    # packages built for one R minor version aren't reused by another.
+    - name: Resolve R library path
+      id: rlib
+      shell: Rscript {0}
+      run: |
+        out <- Sys.getenv("GITHUB_OUTPUT")
+        cat(sprintf("dir=%s\n", .libPaths()[1]), file = out, append = TRUE)
+        cat(sprintf("ver=%s.%s\n", R.version$major, R.version$minor), file = out, append = TRUE)
+
+    # Cache the installed R packages. The key includes this action.yml's hash, so
+    # editing the package list below invalidates the cache; restore-keys lets an
+    # older cache seed the library so only newly added packages get installed.
+    - name: Cache R packages
+      uses: actions/cache@v4
+      with:
+        path: ${{ steps.rlib.outputs.dir }}
+        key: ${{ runner.os }}-R${{ steps.rlib.outputs.ver }}-rpkgs-${{ hashFiles('.github/actions/setup-stories/action.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-R${{ steps.rlib.outputs.ver }}-rpkgs-
+
+    # Mirrors the package list in Installing-quarto.md (knitr + plotly baseline plus the
+    # economic-mobility story's tidyverse/scales/leaflet/leaflet.extras/sf dependencies).
+    # Only missing packages are installed, so a cache hit skips the slow rebuild.
+    - name: Install R packages
+      shell: Rscript {0}
+      run: |
+        pkgs <- c("knitr", "plotly", "tidyverse", "scales",
+                  "leaflet", "leaflet.extras", "sf")
+        missing <- pkgs[!pkgs %in% rownames(installed.packages())]
+        if (length(missing)) {
+          install.packages(missing)
+        }
+        still_missing <- pkgs[!pkgs %in% rownames(installed.packages())]
+        if (length(still_missing)) {
+          stop("Failed to install R packages: ", paste(still_missing, collapse = ", "))
+        }

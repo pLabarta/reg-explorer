@@ -1,0 +1,37 @@
+{# Quarto data story page.
+
+   The story body is authored in quarto/stories/<slug>[/index].qmd and rendered by
+   `scripts/build-stories.sh` to a lean, self-contained HTML fragment at
+   static/quarto/stories/<slug>.fragment.html (inlined plotly/htmlwidgets, no chrome).
+   This page embeds that fragment inside the real site shell (base.html → nav + footer),
+   so a Quarto story is a normal /stories/<slug>/ page styled with the site's tokens. #}
+{% extends "base.html" %}
+
+{% block title %}{{ page.title }} &mdash; {{ config.title }}{% endblock %}
+{% block description %}{{ page.description | default(value="") }}{% endblock %}
+
+{% block content %}
+<article id="scrolly-story" class="page-content container quarto-story">
+  {% set fragment = load_data(path="static/quarto/stories/" ~ page.slug ~ ".fragment.html", format="plain", required=false) %}
+  {% if fragment %}
+    {{ fragment | safe }}
+  {% else %}
+    <p>This story has not been rendered yet. Run <code>scripts/build-stories.sh</code> to build it.</p>
+  {% endif %}
+
+  {# Final scene: an end card reusing the site footer partial (the page-level
+     site footer is suppressed below for data stories). #}
+  <div class="scrolly-end">
+    <p class="scrolly-end-eyebrow">You've reached the end</p>
+    {% include "partials/footer.html" %}
+  </div>
+</article>
+{% endblock %}
+
+{# Data stories use the in-story end card instead of the site footer. #}
+{% block footer %}{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="/scrolly/scrolly.js" defer></script>
+{% endblock %}

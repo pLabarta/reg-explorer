@@ -1,0 +1,27 @@
+// ============================================================
+// Shared SCSS mixins built on the design tokens (sass/_tokens.scss).
+// ============================================================
+
+// Thick accent underline, hugging the text — nav links and inline links (UI.md).
+// Pass `transparent` for a hidden-until-hover underline.
+@mixin accent-underline($color: $accent) {
+  text-decoration: underline;
+  text-decoration-color: $color;
+  text-decoration-thickness: 6px;
+  text-decoration-skip-ink: none;
+  text-underline-offset: -1px;
+}
+
+// Accent focus/hover ring — cards and form inputs.
+@mixin accent-ring {
+  border-color: $accent-light;
+  box-shadow: 0 0 0 3px $accent-light;
+}
+
+// Framed "paper" panel — computational figures and the line_chart shortcode.
+@mixin paper-panel($padding: 2rem) {
+  background: $paper;
+  border-radius: 8px;
+  padding: $padding;
+  margin: 2rem 0;
+}

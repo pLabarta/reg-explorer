@@ -1,0 +1,6 @@
+# Python runtime for jupyter-engine data stories (see docs/quarto.md).
+# Baseline: the jupyter kernel Quarto executes through, plotly for figures, pandas for data.
+# Story-specific packages get added here too (mirrored into CI by setup-stories/action.yml).
+jupyter~=1.1
+plotly~=6.0
+pandas~=2.2

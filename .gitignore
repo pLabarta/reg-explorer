@@ -1,1 +1,12 @@
 public/
+
+# Local Python env for jupyter-engine stories (pip install -r quarto/requirements.txt).
+.venv/
+
+# Bytecode from quarto/_setup.py imports during renders.
+__pycache__/
+
+# Quarto render output — build artifact (reproducible from quarto/_freeze/).
+# The _freeze cache IS committed so renders need no R/data runtime.
+static/quarto/
+quarto/.quarto/

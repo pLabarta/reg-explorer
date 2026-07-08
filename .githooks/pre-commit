@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+#
+# Pre-commit hook: keep story sources lean — a single story folder under
+# quarto/stories/ must stay under 20 MB. This mirrors the CI check in
+# .github/workflows/validate-stories.yml, but blocks the commit locally so
+# oversized data files never enter the repo history (CI only catches them
+# after they're pushed).
+#
+# Sizes are measured from the index — what this commit will actually contain —
+# so untracked local scratch files in a story folder don't cause false failures.
+#
+# Enable once per clone:   git config core.hooksPath .githooks
+# Bypass in an emergency:  git commit --no-verify
+set -euo pipefail
+
+limit_kb=$((20 * 1024))
+
+# Only run when this commit touches story sources.
+git diff --cached --name-only --diff-filter=d -- 'quarto/stories/' | grep -q . || exit 0
+
+fail=0
+# Story *folders* are paths with 4+ components (quarto/stories/<slug>/...);
+# single-file stories (quarto/stories/<slug>.qmd) are exempt, as in CI.
+for slug in $(git ls-files --cached -- 'quarto/stories/' | awk -F/ 'NF > 3 { print $3 }' | sort -u); do
+  # Sum the staged blob sizes for the folder ("<mode> <hash> <stage>\t<path>" → hash).
+  size_bytes=$(git ls-files -s -- "quarto/stories/$slug/" \
+    | awk '{ print $2 }' \
+    | git cat-file --batch-check='%(objectsize)' \
+    | awk '{ s += $1 } END { print s + 0 }')
+  size_kb=$(( (size_bytes + 1023) / 1024 ))
+  size_mb=$(awk "BEGIN { printf \"%.1f\", $size_kb / 1024 }")
+  if [ "$size_kb" -gt "$limit_kb" ]; then
+    echo "pre-commit: story folder 'quarto/stories/$slug/' is ${size_mb} MB staged, over the 20 MB limit." >&2
+    echo "  Trim or downsample its data files (see docs/quarto.md), or bypass with --no-verify." >&2
+    fail=1
+  fi
+done
+
+exit $fail

@@ -1,0 +1,360 @@
+// ============================================================
+// Scrollytelling stage + navigation aids for Quarto data stories.
+// DOM is built by static/scrolly/scrolly.js. Colors come from the design
+// tokens (sass/_tokens.scss) — this is why these styles live in the SCSS
+// pipeline rather than the static scrolly.js companion.
+// ============================================================
+
+// ---- Stage + scenes ----
+// The article (#scrolly-story) becomes a fixed-height stage; each scene is
+// absolutely positioned and centered. Visibility is owned entirely by GSAP
+// (autoAlpha) in scrolly.js — intentionally no opacity/visibility here, so CSS
+// and JS can never disagree.
+#scrolly-story {
+  position: relative;
+  // Fit below the 4rem sticky site header so the stage stays fully in view —
+  // the top isn't hidden under the nav and the bottom is reachable.
+  height: calc(100vh - 4rem);
+  height: calc(100svh - 4rem);
+  overflow: hidden;
+  // Full-width stage (override .page-content/.container constraints) so a scene
+  // can span edge-to-edge without being clipped. Reading width is restored on
+  // the scene content below.
+  max-width: none;
+  padding: 0;
+}
+
+.scrolly-scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  // `safe center` keeps short scenes centered but falls back to top-aligned
+  // (scrollable) when content is taller than the viewport, so tall scenes
+  // like the methods note / references aren't clipped at the top.
+  justify-content: center;
+  justify-content: safe center;
+  align-items: center;   // centre the reading column in the full-width stage
+  overflow-y: auto;
+  // The stage is full-width, so the gutter lives here — matches the site's
+  // 1.5rem so content never touches the edge on mobile.
+  padding: 2rem 1.5rem;
+}
+
+// Constrain scene content to the reading column (the stage itself is full-width).
+.scrolly-scene > * {
+  width: 100%;
+  max-width: 720px;
+}
+
+// Figures (e.g. the Plotly map) need more room than the prose column, so give
+// figure scenes a wider container — still bounded so it doesn't span the stage.
+.scrolly-scene--fig > * {
+  max-width: 900px;
+}
+
+// ---- End card (final scene; reuses the site footer partial) ----
+// The scene wrapper fills the stage edge-to-edge; coloring it dark matches the
+// included .site-footer so the headline area and footer read as one panel.
+.scrolly-scene--end {
+  background: $accent-dark;
+  color: $white;
+  padding: 0;   // the footer partial brings its own container gutter
+}
+
+.scrolly-end {
+  width: 100%;
+  max-width: none;
+  min-height: 100%;          // fill the scene so the footer sits at the bottom
+  display: flex;
+  flex-direction: column;
+}
+
+// "You've reached the end" — centered in the space above the footer.
+.scrolly-end-eyebrow {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: $font-heading;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: $white;
+  margin: 0;
+  padding: 2rem 1.5rem;
+}
+
+// The footer partial is nested inside #scrolly-story.page-content, so reset the
+// list/link typography that .page-content would otherwise leak into it (which
+// indents .footer-links and misaligns the columns). The #scrolly-story prefix
+// raises specificity above the equally-specific .page-content rules.
+#scrolly-story .scrolly-end {
+  ul, ol { padding-left: 0; margin-bottom: 0; }
+  li { margin-bottom: 0; }
+  a { color: inherit; }
+}
+
+// Lock native page scroll while the story view is active (data stories use the
+// in-story end card instead of the site footer).
+body.scrolly-active {
+  overflow: hidden;
+}
+
+// ---- Progress rail (desktop-only ambient indicator) ----
+.scrolly-rail {
+  position: fixed;
+  top: 50%;
+  right: 1.5rem;
+  transform: translateY(-50%);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: flex-end;
+}
+
+.scrolly-rail-tick {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0.35rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $text-muted;
+
+  // The dot
+  &::after {
+    content: '';
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: $border;
+    transition: all 0.2s;
+  }
+
+  // Absolutely positioned so the invisible label doesn't widen the rail's
+  // hover area — reveal only triggers near the dots.
+  .scrolly-rail-label {
+    position: absolute;
+    right: calc(100% + 0.25rem);
+    top: 50%;
+    width: max-content;
+    max-width: 11rem;
+    font-family: $font-heading;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-align: right;
+    overflow-wrap: break-word;
+    opacity: 0;
+    transform: translateY(-50%) translateX(0.25rem);
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+  }
+
+  &.is-done::after { background: $warm-gray; }
+
+  &.is-active {
+    color: $accent-dark;
+
+    &::after {
+      background: $accent-dark;
+      transform: scale(1.5);
+    }
+  }
+
+  // Figure ticks: square instead of round to distinguish from section dots.
+  &--fig::after { border-radius: 2px; }
+
+  // Header tick: hollow ring to mark the start of the story.
+  &--header::after {
+    background: none;
+    border: 2px solid $warm-gray;
+    width: 8px;
+    height: 8px;
+  }
+  &--header.is-active::after {
+    background: none;
+    border-color: $accent-dark;
+  }
+}
+
+// Labels reveal on rail hover — pointer devices only.
+@media (hover: hover) {
+  .scrolly-rail:hover .scrolly-rail-label {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+// ---- Contents button (mobile only; desktop uses the ambient rail) ----
+.scrolly-contents-btn {
+  display: none;   // shown only in the mobile media query below
+  position: fixed;
+  z-index: 40;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid $border;
+  background: $bg;
+  color: $text;
+  font-family: $font-heading;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover { background: $paper; border-color: $warm-gray; }
+}
+
+.scrolly-contents-icon { flex: none; }
+
+// ---- Contents overlay (desktop: right-side panel) ----
+// visibility (not display) so the mobile bottom-sheet can transition in/out.
+.scrolly-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  visibility: hidden;
+  transition: visibility 0s 0.25s;
+
+  &.is-open { visibility: visible; transition-delay: 0s; }
+}
+
+.scrolly-overlay-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba($black, 0.4);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.scrolly-overlay.is-open .scrolly-overlay-backdrop { opacity: 1; }
+
+.scrolly-overlay-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: min(420px, 90vw);
+  background: $bg;
+  box-shadow: -8px 0 32px rgba($black, 0.15);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+}
+
+.scrolly-overlay-search {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  margin-bottom: 1rem;
+  border: 1px solid $border;
+  border-radius: 0.5rem;
+  font-family: $font;
+  font-size: 0.9375rem;
+
+  &:focus { outline: none; @include accent-ring; }
+}
+
+.scrolly-overlay-list {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.scrolly-overlay-entry {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: 0.375rem;
+  background: none;
+  color: $text;
+  font-family: $font-heading;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &--h3 {
+    padding-left: 1.75rem;
+    font-size: 0.875rem;
+    color: $text-muted;
+    font-weight: 400;
+  }
+
+  // Figures: muted, with a small square marker matching the rail's fig ticks.
+  &--fig {
+    color: $text-muted;
+    font-weight: 400;
+
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      margin-right: 0.5rem;
+      border-radius: 2px;
+      background: $warm-gray;
+      vertical-align: middle;
+    }
+  }
+
+  &:hover { background: $paper; }
+
+  &.is-active {
+    background: $accent-light;
+    color: $accent-dark;
+  }
+
+  &.is-hidden { display: none; }
+}
+
+// ---- Mobile: rail hidden; button becomes a round icon; overlay → bottom sheet ----
+@media (max-width: 768px) {
+  .scrolly-rail { display: none; }
+
+  .scrolly-contents-btn {
+    display: inline-flex;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: 0 2px 12px rgba($black, 0.15);
+  }
+  .scrolly-contents-label { display: none; }
+
+  .scrolly-overlay-panel {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    height: auto;
+    max-height: 80vh;
+    border-radius: 1rem 1rem 0 0;
+    box-shadow: 0 -8px 32px rgba($black, 0.15);
+    padding-top: 1.75rem;
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+    transform: translateY(100%);
+
+    // Grab handle.
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0.6rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2.5rem;
+      height: 0.25rem;
+      border-radius: 1rem;
+      background: $border;
+    }
+  }
+  .scrolly-overlay.is-open .scrolly-overlay-panel { transform: translateY(0); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .scrolly-overlay-panel { transition: transform 0.25s; }
+  }
+}

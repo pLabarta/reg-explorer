@@ -31,11 +31,11 @@ credit_link  = "/about/"
 credit_label = "the project team"
 
 [extra.newsletter]
-eyebrow = "Stay in the loop"
-title   = "Join the newsletter"
-button  = "Subscribe"
+eyebrow = "Stay up to date"
+title   = "Join our newsletter"
+button  = "Sign up"
 
 [extra.embeds]
-map    = "https://ui-map-pablitx.netlify.app/?embed=true"
-survey = "https://charlotte-regional-survey-dashboard.streamlit.app/?embed=true"
+map    = "https://crxp.netlify.app/explore/?topnav=1"
+survey = "https://charlotteregionalwellbeing.netlify.app/embed"
 

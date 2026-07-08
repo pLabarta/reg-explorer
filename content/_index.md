@@ -25,7 +25,7 @@ sections = [
 [extra.section_about]
 eyebrow    = "About the project"
 title      = "Who are we and why have we built this?"
-body       = "Difficult problems are harder to solve when people are working from different pictures of reality. The Carolinas Explorer brings neighborhood-level data about fourteen counties into one place, so that residents, planners, and partners across the region can start from the same view."
+body       = "Difficult problems are harder to solve when people are working from different pictures of reality. The Carolinas Regional Explorer brings neighborhood-level data about fourteen counties into one place, so that residents, planners, and partners across the region can start from the same view."
 link_label = "More about the project"
 link       = "/about/"
 
