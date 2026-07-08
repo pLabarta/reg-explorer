@@ -36,6 +36,6 @@ title   = "Join our newsletter"
 button  = "Sign up"
 
 [extra.embeds]
-map    = "https://crxp.netlify.app/embed/"
+map    = "https://crxp.netlify.app/explore/?topnav=1"
 survey = "https://charlotteregionalwellbeing.netlify.app/embed"
 
