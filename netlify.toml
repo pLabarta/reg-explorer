@@ -12,7 +12,7 @@
   force  = true
 
 [[redirects]]
-  from   = "https://survey.carolinasregionalexplorer.com/*"
+  from   = "https://survey.carolinasregionalexplorer.com/"
   to     = "https://carolinasregionalexplorer.com/survey/:splat"
   status = 200
   force  = true

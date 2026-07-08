@@ -6,7 +6,7 @@ template = "collaborate.html"
 [extra]
 hero_title = "We are building a <span class=\"scribble\">network</span> of data practitioners across the region"
 hero_eyebrow = "Work with us"
-hero_cta = "If this is you, send us an email <a href=\"mailto:connect@carolinas-explorer.com\">connect@carolinas-explorer.com</a>"
+hero_cta = "If this is you, send us an email <a href=\"mailto:connect@carolinasregionalexplorer.com\">connect@carolinasregionalexplorer.com</a>"
 
 # ---- Collaborate cards ----
 [[extra.cards]]

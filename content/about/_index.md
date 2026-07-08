@@ -1,6 +1,6 @@
 +++
 title = "A shared starting point"
-description = "Difficult problems are harder to solve when people are working from different pictures of reality. The Carolinas Explorer brings neighborhood-level data about fourteen counties into one place, so that residents, planners, and partners across the region can start from the same view."
+description = "Difficult problems are harder to solve when people are working from different pictures of reality. The Carolinas Regional Explorer brings neighborhood-level data about fourteen counties into one place, so that residents, planners, and partners across the region can start from the same view."
 template = "about.html"
 
 [extra]
