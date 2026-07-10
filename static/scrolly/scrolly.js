@@ -6,11 +6,17 @@
    driven by autoAlpha (opacity + visibility together, so they never desync) and
    the input cooldown uses gsap.delayedCall. Set DURATION > 0 to get fades. */
 (function () {
+  // The template's inline pre-script hides every scene but the first via a
+  // `scrolly-preload` class on <html> so nothing flashes unstyled before this
+  // runs. Every exit path below must drop that class, or a scene that never
+  // gets converted (GSAP missing, no story, too few scenes) stays hidden forever.
+  const reveal = () => document.documentElement.classList.remove('scrolly-preload');
+
   // Graceful no-op if the GSAP CDN is unavailable: leave a normal scrollable page.
-  if (typeof gsap === 'undefined') return;
+  if (typeof gsap === 'undefined') { reveal(); return; }
 
   const story = document.getElementById('scrolly-story');
-  if (!story) return;
+  if (!story) { reveal(); return; }
 
   const DURATION = 0.5;   // fade length per scene (s)
   const GAP = 0.0;       // pause between the old leaving and the new arriving (s)
@@ -23,7 +29,7 @@
     !el.matches('style, script, link') &&
     el.textContent.trim() !== ''
   );
-  if (content.length < 2) return;
+  if (content.length < 2) { reveal(); return; }
 
   // Wrap each element in its own centering container rather than turning the
   // element itself into a flex column — flexing a <p> would stack its inline
@@ -88,6 +94,7 @@
   // Show only the first scene. autoAlpha = opacity + visibility.
   gsap.set(scenes, { autoAlpha: 0 });
   gsap.set(scenes[0], { autoAlpha: 1 });
+  reveal();
 
   let current = 0;
   let locked = false;

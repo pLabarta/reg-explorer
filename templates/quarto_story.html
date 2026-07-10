@@ -10,6 +10,18 @@
 {% block title %}{{ page.title }} &mdash; {{ config.title }}{% endblock %}
 {% block description %}{{ page.description | default(value="") }}{% endblock %}
 
+{# Hide everything but the first scene the instant the DOM exists, so the raw
+   stacked fragment never paints before scrolly.js (deferred + waiting on the
+   GSAP CDN) gets a chance to build scenes. scrolly.js removes this class on
+   every code path — including its "GSAP failed to load" fallback — so a
+   broken CDN can't leave the story stuck hidden. #}
+{% block head_extra %}
+<script>document.documentElement.classList.add('scrolly-preload')</script>
+<style>
+  .scrolly-preload #scrolly-story > :not(:first-child) { visibility: hidden; }
+</style>
+{% endblock %}
+
 {% block content %}
 <article id="scrolly-story" class="page-content container quarto-story">
   {% set fragment = load_data(path="static/quarto/stories/" ~ page.slug ~ ".fragment.html", format="plain", required=false) %}
