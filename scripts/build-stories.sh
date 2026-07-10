@@ -172,6 +172,28 @@ deps = "".join(re.findall(r"<style.*?</style>|<script.*?</script>", head.group(1
 inner = body.group(1) if body else src
 out = deps + "\n" + inner
 
+# Drop the RequireJS scripts Quarto injects into Python (jupyter) stories for
+# ipywidgets support. Nothing in the fragment uses them: figures call
+# Plotly.newPlot directly and the inlined plotly.js sets window.Plotly itself.
+# RequireJS is actively harmful — its global define() makes UMD libraries loaded
+# later (the GSAP CDN script in quarto_story.html) register as AMD modules instead
+# of creating their globals, which silently disables the scrolly stepper. The
+# plotly CDN module import is redundant with the inlined library and would break
+# the fragment's self-containment. (jQuery is left alone: the R htmlwidgets
+# bundle references it, e.g. crosstalk.)
+unused = (
+    r"Original file: /npm/requirejs",         # RequireJS bundle
+    r"\Adefine\(['\"]jquery['\"]",             # RequireJS jquery shim (needs requirejs);
+                                               # \A-anchored: jQuery itself contains define("jquery",…)
+    r"\Aimport ['\"]https://cdn\.plot\.ly/",   # external plotly module import
+)
+def strip_unused(m):
+    body = m.group(1).strip()
+    if any(re.search(pat, body) for pat in unused):
+        return ""
+    return m.group(0)
+out = re.sub(r"<script[^>]*>(.*?)</script>", strip_unused, out, flags=re.S)
+
 # Dedupe repeated large inline <script> blocks. plotly.py embeds a full copy of
 # plotly.js in every figure's output (unlike R htmlwidgets, which shares one), so a
 # multi-figure Python story inlines the same ~5 MB library N times. Byte-identical
