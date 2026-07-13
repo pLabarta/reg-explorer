@@ -17,5 +17,18 @@
   status = 200
   force  = true
 
+# Same-origin proxy for the wellbeing survey dashboard.
+# The survey is a separate Netlify site; serving it under THIS domain lets the
+# main site's Netlify password gate (and its first-party nf_jwt cookie) cover it,
+# and keeps the iframe same-origin. Mounted at the survey's own /embed path so
+# the app's absolute asset URLs resolve through the proxy.
+# NOTE: the survey site itself must be PUBLIC (no independent password) — a 200
+# proxy fetch is unauthenticated, so a protected target would return its 401 page.
+[[redirects]]
+  from   = "/embed/*"
+  to     = "https://charlotteregionalwellbeing.netlify.app/embed/:splat"
+  status = 200
+  force  = true
+
 [context.deploy-preview]
 command = "zola build --base-url $DEPLOY_PRIME_URL"
