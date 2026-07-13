@@ -29,11 +29,24 @@
               Regional map
             </a>
           </li>
-          <li>
-            <a href="/survey/"
-              {% if current_path == "/survey/" %}class="is-active"{% endif %}>
-              Wellbeing survey
-            </a>
+          <li class="nav-dropdown" id="nav-dropdown">
+            <button type="button" class="nav-dropdown-toggle{% if current_path == "/survey/" or current_path == "/report/" %} is-active{% endif %}"
+              id="nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="nav-dropdown-menu">
+              Wellbeing Survey
+              <svg class="nav-dropdown-caret" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div class="nav-dropdown-menu" id="nav-dropdown-menu">
+              <a href="/survey/"
+                {% if current_path == "/survey/" %}class="is-active"{% endif %}>
+                Dashboard
+              </a>
+              <a href="/report/"
+                {% if current_path == "/report/" %}class="is-active"{% endif %}>
+                Report
+              </a>
+            </div>
           </li>
           <li>
             <a href="/stories/"
@@ -77,6 +90,20 @@
       var open = menu.classList.toggle('is-open');
       btn.classList.toggle('is-open', open);
       btn.setAttribute('aria-expanded', open);
+    });
+
+    var dropdown = document.getElementById('nav-dropdown');
+    var dropdownToggle = document.getElementById('nav-dropdown-toggle');
+    dropdownToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var open = dropdown.classList.toggle('is-open');
+      dropdownToggle.setAttribute('aria-expanded', open);
+    });
+    document.addEventListener('click', function(e) {
+      if (!dropdown.contains(e.target)) {
+        dropdown.classList.remove('is-open');
+        dropdownToggle.setAttribute('aria-expanded', false);
+      }
     });
   </script>
 </body>

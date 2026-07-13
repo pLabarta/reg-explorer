@@ -65,6 +65,72 @@
   }
 }
 
+.nav-dropdown {
+  position: relative;
+
+  .nav-dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: inherit;
+    font-size: 0.9375rem;
+    color: $black;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    white-space: nowrap;
+    @include accent-underline(transparent);
+    transition: color 0.15s, text-decoration-color 0.25s ease;
+
+    &:hover { text-decoration-color: $accent; }
+    &.is-active {
+      font-weight: 500;
+      text-decoration-color: $accent;
+    }
+  }
+
+  .nav-dropdown-caret { transition: transform 0.2s ease; }
+
+  .nav-dropdown-menu {
+    display: none;
+    flex-direction: row;
+    gap: 0.25rem;
+    position: absolute;
+    top: calc(100% + 0.25rem);
+    left: 0;
+    background: $bg;
+    border: 1px solid $border;
+    border-radius: 0.5rem;
+    box-shadow: 0 8px 24px rgba($black, 0.08);
+    padding: 0.375rem;
+    z-index: 10;
+
+    // Invisible bridge so the menu stays open while the cursor
+    // travels across the gap between toggle and menu.
+    &::before {
+      content: "";
+      position: absolute;
+      top: -0.35rem;
+      left: 0;
+      right: 0;
+      height: 0.35rem;
+    }
+
+    a {
+      white-space: nowrap;
+      text-align: center;
+    }
+  }
+
+  &:hover .nav-dropdown-menu,
+  &.is-open .nav-dropdown-menu { display: flex; }
+
+  &:hover .nav-dropdown-caret,
+  &.is-open .nav-dropdown-caret { transform: rotate(180deg); }
+}
+
 .nav-hamburger {
   display: none;
   flex-direction: column;
@@ -118,6 +184,39 @@
       padding: 0.75rem 1.5rem;
       border-radius: 0;
       font-size: 1rem;
+    }
+  }
+
+  .nav-dropdown {
+    width: 100%;
+
+    .nav-dropdown-toggle {
+      width: 100%;
+      justify-content: space-between;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0;
+      font-size: 1rem;
+    }
+
+    // Tap-only on mobile: no hover reveal, just the toggled state.
+    &:hover .nav-dropdown-menu { display: none; }
+    &:hover .nav-dropdown-caret { transform: none; }
+    &.is-open .nav-dropdown-caret { transform: rotate(180deg); }
+
+    .nav-dropdown-menu {
+      position: static;
+      border: none;
+      box-shadow: none;
+      border-radius: 0;
+      padding: 0 1.5rem 0.5rem;
+
+      a {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        background: $bg-alt;
+        border-radius: 0.375rem;
+        font-size: 0.9375rem;
+      }
     }
   }
 }

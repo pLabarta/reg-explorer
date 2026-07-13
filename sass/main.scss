@@ -19,7 +19,14 @@ body {
   background: $bg;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
+
+// Main grows to fill available space so the footer stays at the bottom
+// even on short pages (e.g. the Report page).
+main { flex: 1 0 auto; }
 
 img { max-width: 100%; display: block; }
 

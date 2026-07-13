@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}{{ section.title }} &mdash; {{ config.title }}{% endblock %}
+{% block description %}{{ section.description }}{% endblock %}
+
+{% block content %}
+{% include "partials/hero_textonly.html" %}
+
+<section class="report-body">
+  <div class="container">
+    {{ section.content | safe }}
+  </div>
+</section>
+{% endblock %}
