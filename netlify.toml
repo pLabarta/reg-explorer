@@ -17,5 +17,13 @@
   status = 200
   force  = true
 
+# Proxy the password-protected wellbeing dashboard through this origin so its
+# Netlify password gate (nf_jwt cookie) becomes first-party inside the iframe.
+[[redirects]]
+  from   = "/wellbeing/*"
+  to     = "https://charlotteregionalwellbeing.netlify.app/:splat"
+  status = 200
+  force  = true
+
 [context.deploy-preview]
 command = "zola build --base-url $DEPLOY_PRIME_URL"
