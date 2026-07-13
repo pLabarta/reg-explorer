@@ -18,9 +18,12 @@
 {% block scripts %}
 <script>
   (function () {
-    // Base embed URL (already carries ?topnav=1) and the map app's origin.
+    // Base embed URL (already carries ?topnav=1). The explorer app may be
+    // served from production, a Netlify deploy preview, or localhost — so we
+    // derive its exact origin from the URL we actually load into the iframe
+    // rather than hardcoding one value. This same origin is used both to
+    // validate incoming messages and as the targetOrigin for outgoing ones.
     var EMBED_BASE = "{{ config.extra.embeds.map | safe }}";
-    var MAP_ORIGIN = "{{ config.extra.embeds.map_origin | safe }}";
     var iframe = document.getElementById('map-embed');
 
     // --- Inbound: deep-link params → iframe ------------------------------
@@ -30,15 +33,36 @@
     var sep = EMBED_BASE.indexOf('?') === -1 ? '?' : '&';
     iframe.src = EMBED_BASE + (incoming ? sep + incoming : '');
 
-    // --- Outbound: iframe state → container address bar ------------------
+    // Exact origin of the iframe's src — never '*'.
+    var EXPLORER_ORIGIN = new URL(iframe.src, window.location.href).origin;
+
+    // --- Outbound: our URL → iframe --------------------------------------
+    // The explorer's Share dialog wants to show the URL the user actually sees
+    // (this /map page), but it can't read our URL across origins, so we
+    // announce it. Send origin + pathname ONLY — no query, no hash — because
+    // the explorer appends its own state query to build the shared link.
+    function sendHost() {
+      if (!iframe.contentWindow) return;
+      iframe.contentWindow.postMessage(
+        { type: 'crxp:host', url: window.location.origin + window.location.pathname },
+        EXPLORER_ORIGIN
+      );
+    }
+
+    // Initial handshake once the iframe document is ready.
+    iframe.addEventListener('load', sendHost);
+
+    // --- Inbound: iframe state → container address bar -------------------
     // The map posts { type:'crxp:state', search:'?..' } whenever its state
     // changes. Mirror it into our URL with replaceState (no reload, no loop,
-    // no history spam while panning).
+    // no history spam while panning), then re-announce our base URL so the
+    // explorer's Share dialog always has our current path.
     window.addEventListener('message', function (e) {
-      if (e.origin !== MAP_ORIGIN) return;
+      if (e.origin !== EXPLORER_ORIGIN) return;
       var data = e.data;
       if (!data || data.type !== 'crxp:state') return;
-      history.replaceState(null, '', '/map/' + (data.search || ''));
+      history.replaceState(null, '', window.location.pathname + (data.search || ''));
+      sendHost();
     });
   })();
 </script>

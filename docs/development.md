@@ -156,7 +156,6 @@ Two external apps are embedded as iframes and configured in `config.toml` under
 ```toml
 [extra.embeds]
 map        = "https://crxp.netlify.app/explore/?topnav=1"  # the Regional Explorer map app
-map_origin = "https://crxp.netlify.app"                    # its origin (for postMessage checks)
 survey     = "https://charlotteregionalwellbeing.netlify.app/embed"
 ```
 
@@ -168,26 +167,34 @@ more involved: its URL and the container's address bar are kept in sync so that 
 ### Why it needs a message channel
 
 The container (`carolinasregionalexplorer.com`) and the map app (`crxp.netlify.app`) are on
-**different origins**, so the same-origin policy prevents the container from reading the
-iframe's URL directly. State is synced in two independent directions:
+**different origins**, so the same-origin policy prevents each side from reading the other's
+URL directly. State is synced in three independent directions:
 
 - **Inbound — deep link → iframe (container-only).** On load, `map.html` takes the container's
   own query string and appends it to the iframe `src`. The map app already restores its state
   from its own URL, so no map-app code is involved. This uses the `src` (not a message) to
   avoid any load-order race.
-- **Outbound — iframe state → container address bar (needs the map app).** The map app posts a
+- **Inbound — iframe state → container address bar (needs the map app).** The map app posts a
   message to the parent whenever its URL state changes; `map.html` listens and mirrors it into
   the address bar with `history.replaceState` (no reload, so no feedback loop, and no history
   spam while panning).
+- **Outbound — container URL → iframe (`crxp:host`).** The map app's Share dialog needs the URL
+  the user actually sees (this `/map` page), which it can't read across origins. `map.html`
+  announces it with a `crxp:host` message — `origin + pathname` only, **no query or hash** so
+  the map app can append its own state to build the shared link. It's sent on the iframe's
+  `load` event and again after each `crxp:state` message, so the map always has our current base.
 
 ```
 /map?i=veterans&y=2020
    │  inbound: query string appended to iframe src → map restores state
    ▼
 container /map  ◄──── postMessage {type:'crxp:state', search} ──── map app (crxp)
-   │  outbound: history.replaceState('/map' + search)
-   ▼
-address bar tracks the live map state
+   │  history.replaceState(pathname + search)          ▲
+   ▼                                                   │
+address bar tracks the live map state                  │
+                                                       │
+container /map  ──── postMessage {type:'crxp:host', url: origin+pathname} ──►
+   Share dialog shows OUR /map?... URL
 ```
 
 ### Message contract
@@ -201,9 +208,21 @@ The map app emits, and `map.html` listens for:
 `search` is the map's query string (leading `?` included). The container is **param-agnostic** —
 it mirrors whatever keys the map sends (`i`, `y`, position keys, …) without knowing them.
 
+`map.html` emits, and the map app listens for:
+
+```js
+{ type: 'crxp:host', url: 'https://carolinasregionalexplorer.com/map/' }
+```
+
+`url` is `origin + pathname` only (no query, no hash). The map app appends its own state query
+to it to build the "Link to this view" URL in its Share dialog.
+
 ### Ground rules
 
-- **Origin check:** the listener ignores any message whose `e.origin !== config.extra.embeds.map_origin`.
+- **Origin check:** `EXPLORER_ORIGIN` is derived from the iframe's actual `src` origin
+  (`new URL(iframe.src).origin`) rather than hardcoded, so it follows production, Netlify deploy
+  previews, and localhost. The listener ignores any message whose `e.origin !== EXPLORER_ORIGIN`,
+  and every outgoing `postMessage` uses that same value as `targetOrigin` — never `'*'`.
 - **`replaceState`, not `pushState`:** panning the map must not flood browser history.
 - **Embed-only params stay out of the address bar:** the map app excludes `topnav` from the
   posted `search`; `map.html` re-adds it only on the iframe `src`.
