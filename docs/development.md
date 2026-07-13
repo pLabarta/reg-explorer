@@ -1,6 +1,6 @@
 # Development
 
-_Last updated: 2026-06-23_
+_Last updated: 2026-07-13_
 
 > **Who this is for:** developers changing the site's structure, templates, or styles.
 > Assumes you're comfortable with the command line, Git, and editing code.
@@ -12,6 +12,7 @@ Terms like *Tera*, *taxonomy*, *design tokens*, *fragment*, and *freeze* are def
 - [Adding a new page/section](#adding-a-new-pagesection)
 - [Available partials](#available-partials)
 - [Styles](#styles)
+- [Embeds and iframe URL sync](#embeds-and-iframe-url-sync)
 - [Data stories (Quarto)](#data-stories-quarto)
 - [Deploying](#deploying)
 
@@ -144,6 +145,76 @@ not in `main.scss`.** The palette is built around the `$accent` / `$accent-dark`
 `$paper` and `$warm-gray-*` neutrals, and `$black` / `$white`, with `$font` (Archivo) for body
 text and `$font-heading` (Inter) for headings. See [`sass/_tokens.scss`](../sass/_tokens.scss)
 for the current values.
+
+---
+
+## Embeds and iframe URL sync
+
+Two external apps are embedded as iframes and configured in `config.toml` under
+`[extra.embeds]`:
+
+```toml
+[extra.embeds]
+map        = "https://crxp.netlify.app/explore/?topnav=1"  # the Regional Explorer map app
+map_origin = "https://crxp.netlify.app"                    # its origin (for postMessage checks)
+survey     = "https://charlotteregionalwellbeing.netlify.app/embed"
+```
+
+The survey (`templates/survey.html`) is a plain iframe. The **map** (`templates/map.html`) is
+more involved: its URL and the container's address bar are kept in sync so that map state
+(selected indicator, year, map position) is **shareable and deep-linkable** through
+`/map?...` URLs.
+
+### Why it needs a message channel
+
+The container (`carolinasregionalexplorer.com`) and the map app (`crxp.netlify.app`) are on
+**different origins**, so the same-origin policy prevents the container from reading the
+iframe's URL directly. State is synced in two independent directions:
+
+- **Inbound — deep link → iframe (container-only).** On load, `map.html` takes the container's
+  own query string and appends it to the iframe `src`. The map app already restores its state
+  from its own URL, so no map-app code is involved. This uses the `src` (not a message) to
+  avoid any load-order race.
+- **Outbound — iframe state → container address bar (needs the map app).** The map app posts a
+  message to the parent whenever its URL state changes; `map.html` listens and mirrors it into
+  the address bar with `history.replaceState` (no reload, so no feedback loop, and no history
+  spam while panning).
+
+```
+/map?i=veterans&y=2020
+   │  inbound: query string appended to iframe src → map restores state
+   ▼
+container /map  ◄──── postMessage {type:'crxp:state', search} ──── map app (crxp)
+   │  outbound: history.replaceState('/map' + search)
+   ▼
+address bar tracks the live map state
+```
+
+### Message contract
+
+The map app emits, and `map.html` listens for:
+
+```js
+{ type: 'crxp:state', search: '?i=older-adults&y=2024' }
+```
+
+`search` is the map's query string (leading `?` included). The container is **param-agnostic** —
+it mirrors whatever keys the map sends (`i`, `y`, position keys, …) without knowing them.
+
+### Ground rules
+
+- **Origin check:** the listener ignores any message whose `e.origin !== config.extra.embeds.map_origin`.
+- **`replaceState`, not `pushState`:** panning the map must not flood browser history.
+- **Embed-only params stay out of the address bar:** the map app excludes `topnav` from the
+  posted `search`; `map.html` re-adds it only on the iframe `src`.
+
+### The map-app side
+
+The emitter lives in the **separate map repo** (the SvelteKit app at `crxp.netlify.app`), not in
+this repo. It subscribes to the SvelteKit `page` store and posts `crxp:state` to the parent
+whenever `$page.url.search` changes, guarded by `window.parent !== window` and an origin
+allowlist (prod domain, Netlify deploy previews, and the `localhost:1111` dev server). If the
+message contract changes, both sides must be updated together.
 
 ---
 

@@ -6,11 +6,40 @@
 {% block content %}
 <div class="survey-embed-wrap">
   <iframe
-    src="{{ config.extra.embeds.map }}"
+    id="map-embed"
     class="survey-embed"
     title="Regional Explorer Map"
     frameborder="0"
     allowfullscreen
   ></iframe>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    // Base embed URL (already carries ?topnav=1) and the map app's origin.
+    var EMBED_BASE = "{{ config.extra.embeds.map | safe }}";
+    var MAP_ORIGIN = "{{ config.extra.embeds.map_origin | safe }}";
+    var iframe = document.getElementById('map-embed');
+
+    // --- Inbound: deep-link params → iframe ------------------------------
+    // Take the container's own query string (e.g. ?indicator=..&lat=..&zoom=..)
+    // and merge it into the iframe src. The map app restores state from its URL.
+    var incoming = window.location.search.slice(1); // drop leading "?"
+    var sep = EMBED_BASE.indexOf('?') === -1 ? '?' : '&';
+    iframe.src = EMBED_BASE + (incoming ? sep + incoming : '');
+
+    // --- Outbound: iframe state → container address bar ------------------
+    // The map posts { type:'crxp:state', search:'?..' } whenever its state
+    // changes. Mirror it into our URL with replaceState (no reload, no loop,
+    // no history spam while panning).
+    window.addEventListener('message', function (e) {
+      if (e.origin !== MAP_ORIGIN) return;
+      var data = e.data;
+      if (!data || data.type !== 'crxp:state') return;
+      history.replaceState(null, '', '/map/' + (data.search || ''));
+    });
+  })();
+</script>
 {% endblock %}
