@@ -24,4 +24,26 @@ title_left   = "Working with the data"
 body_left    = "A text about how you can use the data in your work, explaining where it comes from and so on."
 title_right  = "A short title for the second data column"
 body_right   = "A short paragraph about methodology, update frequency, and links to documentation."
+
+[extra.sectionD]
+eyebrow = "The map"
+title   = "Regional Map"
+body    = """
+<p>The Carolinas Regional Explorer is a community-data analytical platform developed by the UNC Charlotte Urban Institute. With roots in the Institute's longstanding collaboration with the City of Charlotte and Mecklenburg County on the Quality of Life Explorer, the Regional Explorer expands that footprint to the 14-county region surrounding Charlotte.</p>
+<p>The platform carries dozens of indicators across themes: demographics, economy, education, housing, transportation, health, environment, and civic engagement, for every tract in the region. You can map any indicator, watch it change over time, compare neighborhoods and counties, and look at how two measures relate or where values cluster in space. Every indicator has a plain-language "why it matters" page with sources, and the full dataset is free to download.</p>
+<p>The application and its data pipeline are open source and use no proprietary GIS. We treat statistical uncertainty as a first-class concern: survey estimates carry their margins of error, low-reliability values are flagged, and model-based estimates (such as the CDC health measures) are shown as levels rather than trends where the source does not support comparison over time. How every number is produced, and its limits, is documented on the Methods page.</p>
+<p>This Explorer is a project of the UNC Charlotte Urban Institute and partners, designed to grow as more counties, data, and community input come in. To contribute data or partner with us, visit the UNC Charlotte Urban Institute.</p>
+"""
+
+[extra.sectionE]
+eyebrow = "The well-being survey"
+title   = "Wellbeing Survey"
+body    = """
+<p>The Charlotte Region Well-being Survey is part of the UNC Charlotte Urban Institute's State of the Region 2026. It reports how residents across the 14-county Charlotte region rate their quality of life, based on 3,398 weighted respondents. Every figure is weighted to the regional population and shown with its margin of error.</p>
+<p>For how to read the estimates — confidence intervals, small-sample flags, and suppression rules — see the Methods page.</p>
+<h3>Acknowledgements</h3>
+<p><strong>UNC Charlotte Urban Institute</strong><br>Eric Moore, PhD &middot; Kailas Venkitasubramanian, PhD &middot; Lori Thomas, PhD</p>
+<p><strong>Happiness Research Institute</strong><br>[Name 1] &middot; [Name 2]</p>
+<p><strong>Supported by</strong><br>Gambrell Foundation &middot; UNC Charlotte</p>
+"""
 +++

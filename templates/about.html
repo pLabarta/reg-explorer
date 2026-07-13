@@ -6,6 +6,16 @@
 {% block content %}
 {% include "partials/hero_textonly.html" %}
 
+{% set eyebrow = section.extra.sectionD.eyebrow %}
+{% set title   = section.extra.sectionD.title %}
+{% set body    = section.extra.sectionD.body %}
+{% include "partials/about/section_white.html" %}
+
+{% set eyebrow = section.extra.sectionE.eyebrow %}
+{% set title   = section.extra.sectionE.title %}
+{% set body    = section.extra.sectionE.body %}
+{% include "partials/about/section_gray.html" %}
+
 {% set eyebrow     = section.extra.sectionA.eyebrow %}
 {% set title_left  = section.extra.sectionA.title_left %}
 {% set body_left   = section.extra.sectionA.body_left %}
