@@ -43,6 +43,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # quarto/_freeze only exists once some story has an executable code chunk to
+          # cache; mkdir -p keeps the path valid so `git add` doesn't fail on a fresh
+          # checkout where the directory was never created.
+          mkdir -p quarto/_freeze
           git add quarto/_freeze quarto/_tokens.R quarto/_tokens.py content/stories
           if git diff --staged --quiet; then
             echo "No story output changes to commit."

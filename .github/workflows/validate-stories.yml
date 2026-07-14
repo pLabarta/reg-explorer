@@ -79,6 +79,10 @@ jobs:
           # that changed re-executes once, and committing its new freeze means the next
           # run reuses it instead of re-executing and producing a fresh random ID — so a
           # given content state converges to one commit, then stays quiet.
+          # quarto/_freeze only exists once some story has an executable code chunk to
+          # cache; mkdir -p keeps the path valid so `git add` doesn't fail on a fresh
+          # checkout where the directory was never created.
+          mkdir -p quarto/_freeze
           git add quarto/_freeze quarto/_tokens.R quarto/_tokens.py content/stories
           # static/quarto/ is gitignored — force-add so the Netlify deploy preview
           # (plain `zola build`) has the rendered fragments to serve.
