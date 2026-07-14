@@ -17,6 +17,7 @@ on:
       - 'quarto/**'
       - 'scripts/build-stories.sh'
       - 'sass/_tokens.scss'
+  workflow_dispatch:
 
 # Allow the workflow to push the regenerated outputs back to main.
 permissions:
