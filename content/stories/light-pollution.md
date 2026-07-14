@@ -10,4 +10,5 @@ template = "quarto_story.html"
 [extra]
 tags = []
 author = "Kailas Venkitasubramanian, UNC Charlotte Urban Institute"
+image = "/imgs/light-pollution.png"
 +++
