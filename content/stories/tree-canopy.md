@@ -12,4 +12,5 @@ template = "quarto_story.html"
 tags = ["environment", "housing"]
 author = "Kailas Venkitasubramanian"
 read_time = "10 min read"
+image = "/imgs/canopy-tree.jpeg"
 +++

@@ -12,4 +12,5 @@ template = "quarto_story.html"
 tags = ["environment", "healthcare"]
 author = "Kailas Venkitasubramanian"
 read_time = "11 min read"
+image = "/imgs/light-pollution.png"
 +++

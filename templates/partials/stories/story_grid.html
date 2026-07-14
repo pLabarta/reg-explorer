@@ -20,7 +20,7 @@
     {% for page in remaining %}
     <article class="story-card{% if loop.index > 3 %} story-card--hidden{% endif %}" data-tags="{{ page.extra.tags | default(value=[]) | join(sep=' ') }}">
       <a href="{{ page.path }}" class="story-card-link-overlay" aria-label="{{ page.title }}"></a>
-      <img src="/imgs/placeholder.svg" alt="" class="story-card-img">
+      <img src="{{ page.extra.image | default(value='/imgs/placeholder.svg') }}" alt="" class="story-card-img">
       <div class="story-card-body">
         <p class="story-card-meta">
           {% if page.extra.author %}By {{ page.extra.author }}{% endif %}
