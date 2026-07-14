@@ -38,5 +38,5 @@ button  = "Sign up"
 [extra.embeds]
 map        = "https://crxp.netlify.app/explore/?topnav=1"
 map_origin = "https://crxp.netlify.app"
-survey     = "/embed/"
+survey     = "https://clinquant-licorice-aeeff9.netlify.app/embed"
 
