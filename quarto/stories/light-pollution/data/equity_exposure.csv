@@ -1,0 +1,9 @@
+group,order,exposure,vs_white
+All residents,1,15.34,1.23
+White,2,12.47,1
+Black,3,20.04,1.61
+Hispanic,4,19.65,1.58
+Asian,5,19.56,1.57
+Below poverty,6,17.37,1.39
+Children (<18),7,14.4,1.15
+Older adults (65+),8,12.43,1
