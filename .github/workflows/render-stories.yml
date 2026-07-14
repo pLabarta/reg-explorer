@@ -3,12 +3,14 @@ name: Render & publish stories
 # On pushes to main that touch the stories: validate first (reusing validate-stories.yml),
 # then re-render and commit the version-controlled build outputs back to main.
 #
-# Committed outputs are the durable ones only:
+# Committed outputs:
 #   - quarto/_freeze/        the freeze cache (lets later renders skip the R/Python runtime)
 #   - quarto/_tokens.R/.py   generated from sass/_tokens.scss
 #   - content/stories/*.md   auto-generated Zola companion stubs
-# static/quarto/ is intentionally gitignored (reproducible from _freeze/), so it is not
-# committed here — see the note in .gitignore.
+#   - static/quarto/         rendered fragments — gitignored, but force-added here anyway:
+#                            Netlify's production build only runs `zola build` (see
+#                            netlify.toml), it never invokes Quarto, so the fragments must
+#                            already be in the repo for the site to have anything to embed.
 
 on:
   push:
@@ -49,6 +51,7 @@ jobs:
           # checkout where the directory was never created.
           mkdir -p quarto/_freeze
           git add quarto/_freeze quarto/_tokens.R quarto/_tokens.py content/stories
+          git add -f static/quarto
           if git diff --staged --quiet; then
             echo "No story output changes to commit."
           else
