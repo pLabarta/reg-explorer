@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>integration_changes</title>
+<style>
+
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+width: 0.8em;
+margin: 0 0.8em 0.2em -1em;  vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+
+<h1 id="integration-changes-losing-the-dark">Integration changes — “Losing the Dark”</h1>
+<p>This story originated as a standalone Quarto document in the <code>clt-light-pollution</code> repo (<code>light-pollution-story.qmd</code>). The notes below record exactly what changed to make it a first-class data story in <strong>reg-explorer</strong>, following the folder-based Quarto pipeline (see <code>QUARTO.md</code> / <code>scripts/build-stories.sh</code>, modeled on <code>quarto/stories/wealth-mobility/</code>).</p>
+<h2 id="files-added-to-this-repo">Files added to this repo</h2>
+<ul>
+<li><code>quarto/stories/light-pollution/index.qmd</code> — the story source (renamed from <code>light-pollution-story.qmd</code>; the folder pipeline expects <code>&lt;slug&gt;/index.qmd</code>).</li>
+<li><code>quarto/stories/light-pollution/figures/</code> — the 7 pre-rendered PNG figures, copied as-is.</li>
+<li><code>quarto/stories/light-pollution/references.bib</code> — bibliography, copied as-is.</li>
+<li><code>quarto/stories/light-pollution/data/</code>, <code>analyze.R</code>, <code>figs.R</code> — the analysis inputs and figure-generation scripts, included for reproducibility. Not used at render time — the story has no code chunks.</li>
+<li><code>content/stories/light-pollution.md</code> — the Zola companion stub that makes the story appear as a <code>/stories/light-pollution/</code> page in listings, latest, and tag filters.</li>
+</ul>
+<h2 id="not-copied">Not copied</h2>
+<ul>
+<li><code>story.css</code> — the standalone document’s magazine styling. Dropped so the story inherits the site’s design tokens through the Zola shell (<code>quarto_story.html</code>) instead of fighting them.</li>
+</ul>
+<h2 id="header-yaml-changes-in-index.qmd">Header (YAML) changes in <code>index.qmd</code></h2>
+<p>The rest of the document (prose, figures, tables, citations) is <strong>unchanged</strong>. Only the front matter was adapted to the reg-explorer conventions:</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Change</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Removed the entire <code>format: html:</code> block (<code>theme: cosmo</code>, <code>embed-resources</code>, <code>fig-cap-location</code>, <code>fig-align</code>, <code>css: story.css</code>)</td>
+<td><code>quarto/_quarto.yml</code> owns the output format for every story: a minimal, theme-less, <code>embed-resources: true</code> HTML fragment that gets embedded into the Zola page. A per-story <code>theme: cosmo</code> would pull in Bootstrap/Cosmo CSS and collide with the site design system.</td>
+</tr>
+<tr class="even">
+<td>Removed <code>toc: true</code>, <code>toc-location: left</code>, <code>number-sections: false</code></td>
+<td>The scrollytelling shell (<code>static/scrolly/scrolly.js</code>) provides its own progress rail + contents overlay; <code>_quarto.yml</code> sets <code>toc: false</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>date: last-modified</code> → <code>date: 2026-07-13</code></td>
+<td><code>scripts/build-stories.sh</code> reads the literal <code>date:</code> value into the generated stub as TOML; <code>last-modified</code> is not a valid literal date.</td>
+</tr>
+<tr class="even">
+<td>Added <code>description:</code></td>
+<td>Feeds the listing card summary and the page <code>&lt;meta name=&quot;description&quot;&gt;</code>. The standalone doc had none (only a <code>subtitle</code>).</td>
+</tr>
+<tr class="odd">
+<td>Added <code>csl: …/chicago-author-date.csl</code></td>
+<td>House citation style, matching <code>quarto/stories/wealth-mobility/</code>.</td>
+</tr>
+<tr class="even">
+<td>Kept <code>title</code>, <code>subtitle</code>, <code>author</code>, <code>bibliography</code>, <code>link-citations</code></td>
+<td>Rendered by Quarto’s title block (which <code>scrolly.js</code> treats as the opening scene) and the reference list.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="companion-stub-contentstorieslight-pollution.md">Companion stub (<code>content/stories/light-pollution.md</code>)</h2>
+<p>Hand-written rather than auto-generated so the tags/read-time are meaningful (the build script would emit <code>tags = []</code>). Fields:</p>
+<ul>
+<li><code>template = &quot;quarto_story.html&quot;</code> — embeds the rendered fragment in the site shell.</li>
+<li><code>[extra] tags = [&quot;environment&quot;, &quot;healthcare&quot;]</code> — display/filter chips on the listing (environment plus the story’s human-health / exposure-equity angle). Tags live under <code>[extra]</code>, the repo’s existing convention — they are not wired to Zola’s <code>[taxonomies]</code>, so no <code>/tags/</code> pages are generated.</li>
+<li><code>[extra] author</code>, <code>read_time</code> — shown on the story card.</li>
+</ul>
+<h2 id="build-verification">Build &amp; verification</h2>
+<pre><code>scripts/build-stories.sh light-pollution   # render → static/quarto/stories/light-pollution/…
+                                            # + extract light-pollution.fragment.html
+zola build                                  # assemble the site</code></pre>
+<p>Verified: all 7 figures inline as base64 (0 external image refs), all 7 <code>#fig-*</code> ids preserved (so the stepper gives them the wide figure column), the bibliography renders with 0 unresolved <code>[@…]</code> citations, no Bootstrap/Cosmo leakage, and the page builds at <code>/stories/light-pollution/</code> and appears in the <code>/stories/</code> listing.</p>
+
+
+
+
+
+</body></html>
