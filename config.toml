@@ -34,6 +34,15 @@ credit_label = "the project team"
 eyebrow = "Stay up to date"
 title   = "Join our newsletter"
 button  = "Sign up"
+# Mailchimp embedded-form action URL, e.g.:
+#   https://<region>.list-manage.com/subscribe/post?u=<user_id>&amp;id=<list_id>
+# Get this from Mailchimp: Audience > Signup forms > Embedded form. Leave blank
+# until then — the form renders but does not submit anywhere.
+mailchimp_action = ""
+# The honeypot field name Mailchimp generates alongside the action URL, of the
+# form "b_<user_id>_<list_id>". Required to silence bots; comes from the same
+# embedded form snippet as mailchimp_action above.
+mailchimp_honeypot = ""
 
 [extra.embeds]
 map        = "https://crxp.netlify.app/explore/?topnav=1"
