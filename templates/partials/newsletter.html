@@ -15,12 +15,37 @@
         </div>
       </form>
       {% else %}
-      <form class="newsletter-form" action="#" method="post">
+      {# No mailchimp action configured: render a working-looking form that
+         validates and confirms locally without sending anything anywhere. #}
+      <form class="newsletter-form" data-newsletter-demo method="post" action="#">
         <div class="newsletter-form-row">
-          <input class="newsletter-input" type="email" name="email" placeholder="Your email address" required disabled>
-          <button class="btn btn-primary" type="submit" disabled>{{ config.extra.newsletter.button }}</button>
+          <input class="newsletter-input" type="email" name="email" placeholder="Your email address" required>
+          <button class="btn btn-primary" type="submit">{{ config.extra.newsletter.button }}</button>
         </div>
+        <p class="newsletter-success" role="status" hidden>Thanks! You&rsquo;re on the list.</p>
       </form>
+      <script>
+        (function () {
+          var form = document.currentScript.previousElementSibling;
+          if (!form || !form.hasAttribute('data-newsletter-demo')) { return; }
+          var row = form.querySelector('.newsletter-form-row');
+          var input = form.querySelector('.newsletter-input');
+          var button = form.querySelector('button[type="submit"]');
+          var success = form.querySelector('.newsletter-success');
+          form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (!form.reportValidity()) { return; }
+            button.disabled = true;
+            input.disabled = true;
+            button.textContent = '…';
+            // Simulate a network round-trip for a realistic feel.
+            setTimeout(function () {
+              row.hidden = true;
+              success.hidden = false;
+            }, 600);
+          });
+        })();
+      </script>
       {% endif %}
     </div>
   </div>
