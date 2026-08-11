@@ -101,106 +101,25 @@ body.scrolly-active {
   overflow: hidden;
 }
 
-// ---- Progress rail (desktop-only ambient indicator) ----
-.scrolly-rail {
-  position: fixed;
-  top: 50%;
-  right: 1.5rem;
-  transform: translateY(-50%);
-  z-index: 40;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  align-items: flex-end;
-}
-
-.scrolly-rail-tick {
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: 0.35rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: $text-muted;
-
-  // The dot
-  &::after {
-    content: '';
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: $border;
-    transition: all 0.2s;
-  }
-
-  // Absolutely positioned so the invisible label doesn't widen the rail's
-  // hover area — reveal only triggers near the dots.
-  .scrolly-rail-label {
-    position: absolute;
-    right: calc(100% + 0.25rem);
-    top: 50%;
-    width: max-content;
-    max-width: 11rem;
-    font-family: $font-heading;
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-align: right;
-    overflow-wrap: break-word;
-    opacity: 0;
-    transform: translateY(-50%) translateX(0.25rem);
-    transition: opacity 0.2s, transform 0.2s;
-    pointer-events: none;
-  }
-
-  &.is-done::after { background: $warm-gray; }
-
-  &.is-active {
-    color: $accent-dark;
-
-    &::after {
-      background: $accent-dark;
-      transform: scale(1.5);
-    }
-  }
-
-  // Figure ticks: square instead of round to distinguish from section dots.
-  &--fig::after { border-radius: 2px; }
-
-  // Header tick: hollow ring to mark the start of the story.
-  &--header::after {
-    background: none;
-    border: 2px solid $warm-gray;
-    width: 8px;
-    height: 8px;
-  }
-  &--header.is-active::after {
-    background: none;
-    border-color: $accent-dark;
-  }
-}
-
-// Labels reveal on rail hover — pointer devices only.
-@media (hover: hover) {
-  .scrolly-rail:hover .scrolly-rail-label {
-    opacity: 1;
-    transform: translateY(-50%) translateX(0);
-  }
-}
-
-// ---- Contents button (mobile only; desktop uses the ambient rail) ----
+// ---- Contents button (identical round icon on desktop and mobile) ----
+// Desktop: docked at the article's left edge, vertically centered.
 .scrolly-contents-btn {
-  display: none;   // shown only in the mobile media query below
+  display: flex;
   position: fixed;
   z-index: 40;
+  top: 50%;
+  left: 1.5rem;
+  transform: translateY(-50%);
   align-items: center;
-  gap: 0.4rem;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
   border: 1px solid $border;
   background: $bg;
   color: $text;
-  font-family: $font-heading;
-  font-size: 0.8125rem;
-  font-weight: 500;
+  border-radius: 50%;
+  box-shadow: 0 2px 12px rgba($black, 0.15);
   cursor: pointer;
   transition: all 0.15s;
 
@@ -209,7 +128,7 @@ body.scrolly-active {
 
 .scrolly-contents-icon { flex: none; }
 
-// ---- Contents overlay (desktop: right-side panel) ----
+// ---- Contents overlay (desktop: left-side panel, under the button) ----
 // visibility (not display) so the mobile bottom-sheet can transition in/out.
 .scrolly-overlay {
   position: fixed;
@@ -233,11 +152,11 @@ body.scrolly-active {
 .scrolly-overlay-panel {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0;
   height: 100%;
   width: min(420px, 90vw);
   background: $bg;
-  box-shadow: -8px 0 32px rgba($black, 0.15);
+  box-shadow: 8px 0 32px rgba($black, 0.15);
   display: flex;
   flex-direction: column;
   padding: 1.5rem;
@@ -257,6 +176,28 @@ body.scrolly-active {
 
 .scrolly-overlay-list {
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+// One parent entry + its indented children, visually grouped with a rule so
+// each section reads as a unit rather than a flat list.
+.scrolly-overlay-group {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid $border;
+
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  &.is-hidden { display: none; }
+}
+
+.scrolly-overlay-children {
   display: flex;
   flex-direction: column;
 }
@@ -281,7 +222,7 @@ body.scrolly-active {
     font-weight: 400;
   }
 
-  // Figures: muted, with a small square marker matching the rail's fig ticks.
+  // Figures: muted, with a small square marker.
   &--fig {
     color: $text-muted;
     font-weight: 400;
@@ -308,22 +249,15 @@ body.scrolly-active {
   &.is-hidden { display: none; }
 }
 
-// ---- Mobile: rail hidden; button becomes a round icon; overlay → bottom sheet ----
+// ---- Mobile: button moves to the bottom-right corner; overlay → bottom sheet ----
 @media (max-width: 768px) {
-  .scrolly-rail { display: none; }
-
   .scrolly-contents-btn {
-    display: inline-flex;
+    top: auto;
+    left: auto;
     bottom: 1.5rem;
     right: 1.5rem;
-    width: 3rem;
-    height: 3rem;
-    padding: 0;
-    justify-content: center;
-    border-radius: 50%;
-    box-shadow: 0 2px 12px rgba($black, 0.15);
+    transform: none;
   }
-  .scrolly-contents-label { display: none; }
 
   .scrolly-overlay-panel {
     top: auto;

@@ -1,6 +1,8 @@
 /* Scrollytelling stepper for Quarto stories.
-   Each direct child of #scrolly-story is a "scene"; one is shown at a time and
-   a single scroll gesture / arrow key / swipe advances or rewinds one scene.
+   Each direct child of #scrolly-story becomes a "scene", except a heading is
+   always grouped with the paragraph that opens its section (never shown
+   alone); one scene is shown at a time and a single scroll gesture / arrow
+   key / swipe advances or rewinds one scene.
 
    GSAP is a kept dependency (animated transitions are planned): visibility is
    driven by autoAlpha (opacity + visibility together, so they never desync) and
@@ -31,19 +33,40 @@
   );
   if (content.length < 2) { reveal(); return; }
 
-  // Wrap each element in its own centering container rather than turning the
+  const isHeading = el => el.matches('h1, h2, h3, header') || el.id === 'title-block-header';
+
+  // A heading is never its own scene: it's grouped with the paragraph that
+  // opens its section, so readers always see "Heading + first sentence"
+  // together rather than the heading alone as a scroll stop.
+  const groups = [];
+  for (let i = 0; i < content.length; i++) {
+    const el = content[i];
+    if (isHeading(el)) {
+      const group = [el];
+      const next = content[i + 1];
+      if (next && !isHeading(next) && !next.matches('.scrolly-end')) {
+        group.push(next);
+        i++;
+      }
+      groups.push(group);
+    } else {
+      groups.push([el]);
+    }
+  }
+
+  // Wrap each group in its own centering container rather than turning the
   // element itself into a flex column — flexing a <p> would stack its inline
   // children (<strong>, <span>, text) onto separate lines.
-  const scenes = content.map(el => {
+  const scenes = groups.map(group => {
     const scene = document.createElement('div');
     // Figure scenes get a wider reading column (the Plotly map needs more room
     // than the 720px prose column); end scene is the full-bleed footer card.
-    const isFig = !!el.querySelector('[id^="fig-"]') || /^fig-/.test(el.id || '');
+    const isFig = group.some(el => el.querySelector('[id^="fig-"]') || /^fig-/.test(el.id || ''));
+    const isEnd = group.some(el => el.matches('.scrolly-end'));
     scene.className = 'scrolly-scene' +
-      (el.matches('.scrolly-end') ? ' scrolly-scene--end' :
-        isFig ? ' scrolly-scene--fig' : '');
-    story.insertBefore(scene, el);
-    scene.appendChild(el);
+      (isEnd ? ' scrolly-scene--end' : isFig ? ' scrolly-scene--fig' : '');
+    story.insertBefore(scene, group[0]);
+    group.forEach(el => scene.appendChild(el));
     return scene;
   });
 
@@ -72,22 +95,44 @@
       });
       return;
     }
-    // Quarto figures: <div.cell> … <div id="fig-N"> … </div>.
+    // Quarto figures: <div id="fig-N" data-fig-scap="…"> … <figcaption>…</figcaption>.
+    // Nav title prefers the figure's short caption (fig-scap in the .qmd) —
+    // written specifically to be a short name — and falls back to the full
+    // caption, then the id slug, if a figure has no fig-scap set.
     const fig = scene.querySelector('[id^="fig-"]');
     if (fig) {
+      const scap = fig.getAttribute('data-fig-scap');
+      const caption = fig.querySelector('figcaption');
+      // Quarto's own caption text is pre-numbered ("Figure 1: …") — strip
+      // that so it isn't doubled under our own "Figure: " label.
+      const captionText = caption
+        ? caption.textContent.trim().replace(/^Figure\s+\S+:\s*/, '')
+        : '';
+      const label = scap || captionText || fig.id.replace(/^fig-/, '');
       items.push({
         index: i,
         level: 'fig',
         id: fig.id,
-        title: 'Figure ' + fig.id.replace(/^fig-/, ''),
+        title: 'Figure: ' + label,
       });
     }
   });
-  // One ordered nav list drives both aids. Rail = header + sections + figures;
-  // the contents list (mobile sheet) shows everything.
+  // One ordered nav list drives the contents drawer. It's flat (for index
+  // math and the search filter) but also grouped into a parent/child tree:
+  // each header or H2 is a parent, and the H3s/figures that follow it (until
+  // the next parent) are its children — mirrors the story's own section
+  // hierarchy.
   const navItems = items.sort((a, b) => a.index - b.index);
-  const railSections = navItems.filter(s =>
-    s.level === 'header' || s.level === 2 || s.level === 'fig');
+  const navTree = [];
+  navItems.forEach(item => {
+    if (item.level === 'header' || item.level === 2) {
+      navTree.push({ ...item, children: [] });
+    } else if (navTree.length) {
+      navTree[navTree.length - 1].children.push(item);
+    } else {
+      navTree.push({ ...item, children: [] });
+    }
+  });
 
   document.body.classList.add('scrolly-active');
 
@@ -100,9 +145,9 @@
   let locked = false;
   let overlayOpen = false;
 
-  // Nav DOM, populated by buildRail()/buildOverlay().
-  const railTicks = [];
+  // Nav DOM, populated by buildOverlay().
   const overlayEntries = [];
+  const overlayGroups = [];
   let overlay, overlayBtn, searchInput;
 
   function goTo(index) {
@@ -143,7 +188,7 @@
     updateNav();
   }
 
-  // ---- Navigation aids (progress rail + searchable contents overlay) ----
+  // ---- Navigation aid (searchable contents drawer) ----
 
   // Index of the latest reached item in a list (-1 while still on the
   // pre-section header scene).
@@ -156,11 +201,6 @@
   function updateNav() {
     const aEntry = activeIn(navItems);
     overlayEntries.forEach((e, k) => e.classList.toggle('is-active', k === aEntry));
-    const aRail = activeIn(railSections);
-    railTicks.forEach((t, k) => {
-      t.classList.toggle('is-active', k === aRail);
-      t.classList.toggle('is-done', aRail >= 0 && k < aRail);
-    });
   }
 
   // Lock-respecting jump so a click can't overlap an in-flight transition.
@@ -173,29 +213,6 @@
     closeOverlay();
   }
 
-  function buildRail() {
-    const rail = document.createElement('div');
-    rail.className = 'scrolly-rail';
-    railSections.forEach(sec => {
-      const tick = document.createElement('button');
-      tick.type = 'button';
-      tick.className = 'scrolly-rail-tick' +
-        (sec.level === 'fig' ? ' scrolly-rail-tick--fig' : '') +
-        (sec.level === 'header' ? ' scrolly-rail-tick--header' : '');
-      tick.setAttribute('aria-label', sec.title);
-      const label = document.createElement('span');
-      label.className = 'scrolly-rail-label';
-      label.textContent = sec.title;
-      tick.appendChild(label);
-      tick.addEventListener('click', () => jumpTo(sec.index));
-      rail.appendChild(tick);
-      railTicks.push(tick);
-    });
-    // Desktop-only ambient rail (hidden on mobile via CSS; the contents sheet
-    // covers mobile navigation).
-    document.body.appendChild(rail);
-  }
-
   function buildOverlay() {
     overlayBtn = document.createElement('button');
     overlayBtn.type = 'button';
@@ -203,14 +220,15 @@
     overlayBtn.setAttribute('aria-label', 'Contents');
     overlayBtn.setAttribute('aria-expanded', 'false');
     overlayBtn.setAttribute('aria-controls', 'scrolly-contents');
-    // List/timeline glyph + text label (label hidden on mobile via CSS).
+    // Icon-only round button — identical on desktop and mobile, so it never
+    // competes with the reading column for width. It's the sole nav
+    // affordance on both, opening the same drawer.
     overlayBtn.innerHTML =
       '<svg class="scrolly-contents-icon" width="16" height="16" viewBox="0 0 16 16" ' +
       'fill="none" aria-hidden="true"><circle cx="2.5" cy="4" r="1.5" fill="currentColor"/>' +
       '<circle cx="2.5" cy="12" r="1.5" fill="currentColor"/>' +
       '<rect x="6" y="3" width="9" height="2" rx="1" fill="currentColor"/>' +
-      '<rect x="6" y="11" width="9" height="2" rx="1" fill="currentColor"/></svg>' +
-      '<span class="scrolly-contents-label">Contents</span>';
+      '<rect x="6" y="11" width="9" height="2" rx="1" fill="currentColor"/></svg>';
     overlayBtn.addEventListener('click', openOverlay);
     document.body.appendChild(overlayBtn);
 
@@ -233,19 +251,43 @@
     searchInput.placeholder = 'Filter sections…';
     searchInput.addEventListener('input', filterEntries);
 
+    // Groups mirror navTree: a parent entry followed by its own indented list
+    // of child entries, so the DOM structure itself carries the hierarchy.
     const list = document.createElement('div');
     list.className = 'scrolly-overlay-list';
-    navItems.forEach(item => {
+    navTree.forEach(node => {
+      const group = document.createElement('div');
+      group.className = 'scrolly-overlay-group';
+
       const entry = document.createElement('button');
       entry.type = 'button';
       entry.className = 'scrolly-overlay-entry' +
-        (item.level === 3 ? ' scrolly-overlay-entry--h3' : '') +
-        (item.level === 'fig' ? ' scrolly-overlay-entry--fig' : '') +
-        (item.level === 'header' ? ' scrolly-overlay-entry--header' : '');
-      entry.textContent = item.title;
-      entry.addEventListener('click', () => jumpTo(item.index));
-      list.appendChild(entry);
+        (node.level === 'header' ? ' scrolly-overlay-entry--header' : '');
+      entry.textContent = node.title;
+      entry.addEventListener('click', () => jumpTo(node.index));
+      group.appendChild(entry);
       overlayEntries.push(entry);
+      const groupEntries = [entry];
+
+      if (node.children.length) {
+        const childList = document.createElement('div');
+        childList.className = 'scrolly-overlay-children';
+        node.children.forEach(item => {
+          const childEntry = document.createElement('button');
+          childEntry.type = 'button';
+          childEntry.className = 'scrolly-overlay-entry' +
+            (item.level === 3 ? ' scrolly-overlay-entry--h3' : '') +
+            (item.level === 'fig' ? ' scrolly-overlay-entry--fig' : '');
+          childEntry.textContent = item.title;
+          childEntry.addEventListener('click', () => jumpTo(item.index));
+          childList.appendChild(childEntry);
+          overlayEntries.push(childEntry);
+          groupEntries.push(childEntry);
+        });
+        group.appendChild(childList);
+      }
+      overlayGroups.push({ group, entries: groupEntries });
+      list.appendChild(group);
     });
 
     panel.appendChild(searchInput);
@@ -259,6 +301,11 @@
     const q = searchInput.value.trim().toLowerCase();
     overlayEntries.forEach((e, k) => {
       e.classList.toggle('is-hidden', q !== '' && !navItems[k].title.toLowerCase().includes(q));
+    });
+    // Hide a group entirely once none of its entries (parent or children)
+    // survived the filter, so no empty divider is left behind.
+    overlayGroups.forEach(({ group, entries }) => {
+      group.classList.toggle('is-hidden', entries.every(e => e.classList.contains('is-hidden')));
     });
   }
 
@@ -339,8 +386,7 @@
     step(diff);
   }, { passive: true });
 
-  // Build the nav aids and sync initial state.
-  buildRail();
+  // Build the nav aid and sync initial state.
   buildOverlay();
   updateNav();
 })();
