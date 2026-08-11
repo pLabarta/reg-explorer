@@ -44,14 +44,14 @@ At 44% tree cover, the Charlotte region is leafy, well above most U.S. metros. B
 line bends the wrong way. Between 2015 and 2023 the region's canopy trended steadily downward, settling
 about half a point lower (@fig-trend).
 
-![Regional tree canopy, area-weighted across all tracts, 2015–2023.](figures/fig1_region_trend.png){#fig-trend fig-scap="Canopy trend, 2015–2023" fig-alt="Line chart of regional tree canopy percentage from 2015 to 2023, showing a peak in 2016 followed by a steady decline to 43.5 percent by 2023." width=80%}
+![Regional tree canopy, area-weighted across all tracts, 2015–2023.](figures/fig1_region_trend.png "Canopy trend, 2015–2023"){#fig-trend fig-scap="The y-axis is zoomed in to show the trend clearly — the visible dip is a real half-point decline across a 44%-canopy region." fig-alt="Line chart of regional tree canopy percentage from 2015 to 2023, showing a peak in 2016 followed by a steady decline to 43.5 percent by 2023." width=80%}
 
 Half a point sounds trivial. It is not, for two reasons. First, a regional average pools rapidly
 developing areas with vast tracts of protected or rural forest that change little, so it dilutes real
 local losses. Second, the losses are lumpy. @fig-change shows the distribution of change across the
 region's 752 tracts: most changed little, but a long left tail of tracts shed canopy heavily.
 
-![Change in tree canopy by census tract, 2015–2023. Brown bars lost canopy; teal gained.](figures/fig2_change_hist.png){#fig-change fig-scap="Distribution of tract-level change" fig-alt="Histogram of canopy change across the region's 752 census tracts, showing most tracts clustered near zero change with a long left tail of tracts that lost significant canopy." width=80%}
+![Change in tree canopy by census tract, 2015–2023. Brown bars lost canopy; teal gained.](figures/fig2_change_hist.png "Distribution of tract-level change"){#fig-change fig-scap="Watch the left tail, not just the peak: most tracts sit near zero, but a long tail of heavy losers pulls the regional average down." fig-alt="Histogram of canopy change across the region's 752 census tracts, showing most tracts clustered near zero change with a long left tail of tracts that lost significant canopy." width=80%}
 
 This matches, at a regional scale, what the City of Charlotte's own high-resolution assessments have been
 warning for years: the city's canopy fell from **49% to 45% between 2012 and 2018**, a net loss of some
@@ -64,14 +64,14 @@ the region's growth is now happening.
 Canopy change is not evenly spread. @fig-map maps it tract by tract. The brown (canopy loss) clusters along the region's growth frontier: the southern arc of Mecklenburg into Union, and across the
 state line into the booming Lancaster and York county suburbs.
 
-![Change in tree canopy by census tract, 2015–2023.](figures/map_canopy_change.png){#fig-map fig-scap="Map of canopy change by tract" fig-alt="Map of the 14-county region colored by tract-level canopy change, with brown areas showing canopy loss concentrated along the southern growth frontier of Mecklenburg County into Union County and across the state line into Lancaster and York counties, South Carolina." width=95%}
+![Change in tree canopy by census tract, 2015–2023.](figures/map_canopy_change.png "Map of canopy change by tract"){#fig-map fig-scap="Darker brown marks the steepest losses — trace the growth frontier along southern Mecklenburg and across into Lancaster and York." fig-alt="Map of the 14-county region colored by tract-level canopy change, with brown areas showing canopy loss concentrated along the southern growth frontier of Mecklenburg County into Union County and across the state line into Lancaster and York counties, South Carolina." width=95%}
 
 By county, the pattern is unambiguous (@fig-county). The heaviest losses are in the **South Carolina
 border counties**, Lancaster lost nearly **4 points** of canopy and York more than a point, exactly the
 places absorbing Charlotte's southward spillover. The slower-growing western counties (Cleveland, Gaston,
 Catawba) *gained* canopy as existing trees matured.
 
-![Area-weighted canopy change by county, 2015–2023.](figures/fig3_county_change.png){#fig-county fig-scap="County-level canopy change" fig-alt="Bar chart of area-weighted canopy change by county from 2015 to 2023, ranging from a loss of 3.9 percentage points in Lancaster County to a gain of 1.3 points in Cleveland County, with South Carolina border counties showing the steepest losses." width=80%}
+![Area-weighted canopy change by county, 2015–2023.](figures/fig3_county_change.png "County-level canopy change"){#fig-county fig-scap="Bars are sorted by change: South Carolina border counties cluster at the losing end, slower-growing western counties at the gaining end." fig-alt="Bar chart of area-weighted canopy change by county from 2015 to 2023, ranging from a loss of 3.9 percentage points in Lancaster County to a gain of 1.3 points in Cleveland County, with South Carolina border counties showing the steepest losses." width=80%}
 
 | County | Canopy 2015 | Canopy 2023 | Change (pts) |
 |---|---:|---:|---:|
@@ -121,7 +121,7 @@ the correlation is **r = −0.34**. The relationship is even tighter against phy
 change correlates **−0.50** with the growth of impervious surface (roads, roofs, parking), the clearest
 signature of land being cleared and paved.
 
-![Tract-level canopy change against the share of homes built since 2010.](figures/fig4_housing_scatter.png){#fig-housing fig-scap="Canopy change vs. new construction" fig-alt="Scatter plot of tract-level canopy change against the share of homes built since 2010, showing a negative trend (r = -0.34): tracts with more recent construction lost more canopy." width=80%}
+![Tract-level canopy change against the share of homes built since 2010.](figures/fig4_housing_scatter.png "Canopy change vs. new construction"){#fig-housing fig-scap="Each point is a census tract; the downward slope is the correlation — more recent construction tracks with more canopy loss." fig-alt="Scatter plot of tract-level canopy change against the share of homes built since 2010, showing a negative trend (r = -0.34): tracts with more recent construction lost more canopy." width=80%}
 
 The gradient is stark. Tracts in the **top quarter** for recent construction lost **1.3 points** of
 canopy on average; tracts in the **bottom quarter** *gained* **0.9 points**. In slower-growing,
@@ -148,7 +148,7 @@ neighborhoods, not less** (@fig-income). Lower-income tracts gained a bit on ave
 (**+0.7 points**), while higher-income tracts **lost** ground (**−0.3 points**), and nearly half of
 higher-income tracts lost canopy versus a third of lower-income ones.
 
-![Baseline canopy by income (left) and average canopy change (right), urban tracts only.](figures/fig5_income_terciles.png){#fig-income fig-scap="Canopy by income group" fig-alt="Two-panel chart of urban tracts by income group: the left panel shows baseline 2015 canopy percentage rising with income, from 37 percent in lower-income tracts to 41 percent in higher-income tracts; the right panel shows average canopy change from 2015 to 2023, with lower-income tracts gaining 0.7 points while higher-income tracts lost 0.3 points." width=95%}
+![Baseline canopy by income (left) and average canopy change (right), urban tracts only.](figures/fig5_income_terciles.png "Canopy by income group"){#fig-income fig-scap="Read the two panels together: the left shows the 2015 starting gap by income, the right shows which direction each group moved by 2023." fig-alt="Two-panel chart of urban tracts by income group: the left panel shows baseline 2015 canopy percentage rising with income, from 37 percent in lower-income tracts to 41 percent in higher-income tracts; the right panel shows average canopy change from 2015 to 2023, with lower-income tracts gaining 0.7 points while higher-income tracts lost 0.3 points." width=95%}
 
 | Income group (urban) | Median income | Canopy 2015 | Canopy 2023 | Mean change | Tracts losing |
 |---|---:|---:|---:|---:|---:|

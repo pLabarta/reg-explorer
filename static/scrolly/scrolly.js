@@ -95,12 +95,16 @@
       });
       return;
     }
-    // Quarto figures: <div id="fig-N" data-fig-scap="…"> … <figcaption>…</figcaption>.
-    // Nav title prefers the figure's short caption (fig-scap in the .qmd) —
-    // written specifically to be a short name — and falls back to the full
-    // caption, then the id slug, if a figure has no fig-scap set.
+    // Quarto figures: <div id="fig-N"> … <img title="…"> … <figcaption>…</figcaption>.
+    // Nav title prefers the figure's short title — the quoted string after
+    // the image path in the .qmd (`![caption](path "Short title")`), which
+    // Quarto renders as the img's `title` attribute — and falls back to
+    // fig-scap, then the full caption, then the id slug, for figures that
+    // don't set one.
     const fig = scene.querySelector('[id^="fig-"]');
     if (fig) {
+      const img = fig.querySelector('img');
+      const imgTitle = img ? img.getAttribute('title') : '';
       const scap = fig.getAttribute('data-fig-scap');
       const caption = fig.querySelector('figcaption');
       // Quarto's own caption text is pre-numbered ("Figure 1: …") — strip
@@ -108,7 +112,7 @@
       const captionText = caption
         ? caption.textContent.trim().replace(/^Figure\s+\S+:\s*/, '')
         : '';
-      const label = scap || captionText || fig.id.replace(/^fig-/, '');
+      const label = imgTitle || scap || captionText || fig.id.replace(/^fig-/, '');
       items.push({
         index: i,
         level: 'fig',

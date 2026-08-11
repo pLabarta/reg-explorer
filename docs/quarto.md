@@ -190,29 +190,31 @@ Both kinds work and are inlined by `embed-resources`, so the fragment stays self
 - **Pre-rendered images:** `knitr::include_graphics("output/figures/fig1.png")` (relative path).
 - **Interactive widgets:** plotly and leaflet render inline.
 
-### Title, description, and alt text
+### Title, description, reading tip, and alt text
 
-A pre-rendered image inserted with Markdown syntax can carry three distinct pieces of text,
-each with a different job. Set all three — they're cheap to write and each one is used
+A pre-rendered image inserted with Markdown syntax can carry four distinct pieces of text,
+each with a different job. Set all four — they're cheap to write and each one is used
 somewhere:
 
 ```md
-![Regional tree canopy, area-weighted across all tracts, 2015–2023.](figures/fig1_region_trend.png){#fig-trend fig-scap="Canopy trend, 2015–2023" fig-alt="Line chart of regional tree canopy percentage from 2015 to 2023, showing a peak in 2016 followed by a steady decline to 43.5 percent by 2023." width=80%}
+![Regional tree canopy, area-weighted across all tracts, 2015–2023.](figures/fig1_region_trend.png "Canopy trend, 2015–2023"){#fig-trend fig-scap="The y-axis is zoomed in to show the trend clearly — the visible dip is a real half-point decline across a 44%-canopy region." fig-alt="Line chart of regional tree canopy percentage from 2015 to 2023, showing a peak in 2016 followed by a steady decline to 43.5 percent by 2023." width=80%}
 ```
 
 | Field | Syntax | Purpose |
 |---|---|---|
-| **Title** | `fig-scap="…"` | A short name for the figure. Not shown in the figure itself — the site's scrollytelling nav (`static/scrolly/scrolly.js`) reads it (as `data-fig-scap`) to label this figure's entry in the contents drawer, e.g. "Figure: Canopy trend, 2015–2023". Keep it to a few words. |
+| **Title** | the quoted string after the image path, `(path "…")` | A short name for the figure. Not shown in the figure itself — Quarto renders it as the `<img>`'s `title` attribute, and the site's scrollytelling nav (`static/scrolly/scrolly.js`) reads that to label this figure's entry in the contents drawer, e.g. "Figure: Canopy trend, 2015–2023". Keep it to a few words. |
 | **Description** | the bracketed `![…]` text (`fig-cap`) | The full caption, rendered visibly under the figure. Write it as a sentence a reader skimming past the chart would want. |
+| **Reading tip** | `fig-scap="…"` | A short note on *how to read* the chart — a scale quirk, what a color means, which panel to compare against which. Not rendered visually; not shown in the figure or the nav. Despite the name, this project does not use `fig-scap` for its Quarto-standard purpose (a List-of-Figures short caption) — it's repurposed as a reading-tip slot. |
 | **Alt text** | `fig-alt="…"` | Screen-reader-only description of what the chart shows — never rendered visually. Describe the shape of the data (trend, comparison, distribution), not just what type of chart it is: "line chart declining from 44% to 43.5%" beats "a line chart". |
 
-If a figure has no `fig-scap`, the nav drawer falls back to the full caption, then to the
-figure's id — so `fig-scap` is optional but recommended once a caption gets long enough that
-it's awkward as a nav label.
+If a figure has no title set, the nav drawer falls back to `fig-scap`, then the full caption,
+then the figure's id — so the title is optional but recommended once a caption gets long
+enough that it's awkward as a nav label.
 
 For figures built with code chunks (`#| label:`/`#| fig-cap:`, see [§3](#3-setup-chunk-and-design-tokens)),
-the same three fields apply via chunk options: `#| label: fig-trend`, `#| fig-cap: "…"`,
-`#| fig-scap: "…"`, `#| fig-alt: "…"`.
+the same fields apply via chunk options: `#| label: fig-trend`, `#| fig-cap: "…"`,
+`#| fig-scap: "…"` (reading tip), `#| fig-alt: "…"`. Chunk options have no equivalent to the
+Markdown-image title string, so for code-chunk figures the nav falls back to `fig-scap`.
 
 For visual parity with the site, color charts with the tokens from `_setup.R` (or
 `zola_style()` for plotly). **Pre-baked PNGs keep whatever palette they were generated
