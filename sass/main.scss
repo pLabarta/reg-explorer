@@ -662,9 +662,16 @@ a {
 
 // ---- Quarto story (embedded fragment) ----
 .quarto-story {
-  // Frame computational figures like the line_chart shortcode.
+  // No card/panel styling — the scrollytelling media column itself carries
+  // the paper background now (see .scrolly-media-col), so the individual
+  // figure box would just be a redundant nested frame.
   figure,
-  .cell-output-display { @include paper-panel; }
+  .cell-output-display {
+    background: none;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+  }
 
   figure img,
   .cell-output-display img { margin: 0 auto; }
@@ -679,6 +686,63 @@ a {
   }
 
   .js-plotly-plot { width: 100%; }
+
+  // ---- Tables ----
+  // Quarto wraps a table's caption + <table> in
+  // figure.quarto-float-tbl > figcaption + div[aria-describedby] > table.
+  // The inner div is the one that can actually overflow, so it's the one
+  // that scrolls — the table itself sizes to its content rather than being
+  // squeezed to fit, which is what was making columns unreadable in a
+  // narrower panel.
+  .quarto-float-tbl > div {
+    overflow-x: auto;
+    // Fades the left/right edges so a table wider than its column reads as
+    // "more to scroll" rather than abruptly cut off.
+    -webkit-mask-image: linear-gradient(to right, transparent, black 16px, black calc(100% - 16px), transparent);
+    mask-image: linear-gradient(to right, transparent, black 16px, black calc(100% - 16px), transparent);
+  }
+
+  table {
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  th, td {
+    position: relative;
+    padding: 0.5rem 0.875rem;
+    text-align: left;
+    border-bottom: 1px solid $border;
+    // Data stays on one line (numbers/short labels don't benefit from
+    // wrapping); headers are allowed to wrap within a reasonable width — a
+    // long header like "Homes built since 2010" wrapping to two lines keeps
+    // its column narrow, instead of forcing the whole table wider to fit it
+    // on one line.
+    white-space: nowrap;
+
+    // A soft, fading vertical rule between columns (rather than a full-height
+    // solid line) — reads as a column divider without turning the table into
+    // a harsh grid or fighting the row lines.
+    &:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 20%;
+      bottom: 20%;
+      right: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, rgba($warm-gray, 0.6), transparent);
+    }
+  }
+
+  th {
+    font-family: $font-heading;
+    font-weight: 600;
+    color: $text;
+    border-bottom: 2px solid $warm-gray;
+    white-space: normal;
+    max-width: 7.5rem;
+  }
+
+  tbody tr:nth-child(even) { background: rgba($warm-gray-light, 0.35); }
 }
 
 // ---- Shortcode: line_chart ----

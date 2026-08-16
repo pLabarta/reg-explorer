@@ -220,6 +220,29 @@ For visual parity with the site, color charts with the tokens from `_setup.R` (o
 `zola_style()` for plotly). **Pre-baked PNGs keep whatever palette they were generated
 with** — if you want them on-brand, regenerate them using the site tokens.
 
+### Wide-desktop split view: the referenced figure follows the paragraph
+
+On a wide desktop viewport (1200px and up), the scrollytelling stepper (`static/scrolly/scrolly.js`)
+splits into two columns: your prose steps one paragraph at a time on the left, exactly as
+before, while whichever figure or table the *current* paragraph's `@fig-id`/`@tbl-id`
+cross-reference points at is pinned in a synced panel on the right — updating automatically as
+the reader advances. On narrower screens, or a story with no figures/tables at all, this is
+inert and every block (including figures/tables) is still its own full-screen stop, as before.
+
+**No new syntax is needed** — the existing cross-reference convention (`@fig-trend`, `@tbl-losers`)
+already provides the pairing signal; Quarto's rendered `<a class="quarto-xref" href="#fig-trend">`
+links in your prose are what the JS reads.
+
+The one authoring rule this adds: **reference at most one figure or table per paragraph.** Only
+the *first* `@fig-`/`@tbl-` reference in a paragraph is used to pick what's pinned — if a
+paragraph mentions two, only the first pairs correctly and the browser console logs a warning.
+Both stories already follow this pattern naturally; if a section needs to discuss two figures,
+give each its own paragraph.
+
+A figure or table that no paragraph ever references still renders (reachable via the Contents
+drawer, and included in the narrow-mode flow) but logs a console warning, since it likely means
+a `@fig-`/`@tbl-` reference was dropped or never added.
+
 ## 6. Package dependencies
 
 [The Quarto toolchain setup](development.md#data-stories-quarto) covers the baseline.

@@ -3,7 +3,7 @@
   publish = "public"
 
 [build.environment]
-  ZOLA_VERSION = "0.22.0"
+  ZOLA_VERSION = "0.23.3"
 
 [[redirects]]
   from   = "https://explorer.carolinasregionalexplorer.com/*"

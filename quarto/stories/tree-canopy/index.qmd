@@ -36,8 +36,6 @@ These figures come from the **NLCD Tree Canopy Cover** satellite product [@nlcd_
 parcel-level canopy studies, which cover the city alone and report a higher number. Both point the same direction: down. See [Data and methods] for the distinction.
 :::
 
----
-
 ## 1. A region still green, but thinning
 
 At 44% tree cover, the Charlotte region is leafy, well above most U.S. metros. But the trend
@@ -203,8 +201,6 @@ The equity conversation deserves a regional update, too. The familiar, important
 under-canopied low-income neighborhoods still holds. But in a growing Sun Belt metro, an equally urgent
 task is to *keep* the canopy that development is removing, much of it in the affluent, fast-building
 edges where, counter to the national script, the trees are coming down fastest.
-
----
 
 ## Data and methods {#data-and-methods}
 

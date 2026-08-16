@@ -1,15 +1,15 @@
-{% set remaining = paginator.pages | slice(start=1) %}
-{% if remaining %}
+{% set remaining_count = paginator.pages | length - 1 %}
+{% if remaining_count > 0 %}
 <div class="story-grid-section">
   <div class="story-grid-header">
     <p class="eyebrow">All stories</p>
     <div class="story-filters" id="story-filters">
       <button class="story-filter-btn is-active" data-filter="all">All</button>
-      {% set seen = [] %}
+      {% set seen = "" %}
       {% for page in paginator.pages %}
         {% for tag in page.extra.tags | default(value=[]) %}
-          {% if tag not in seen %}
-            {% set_global seen = seen | concat(with=tag) %}
+          {% if not (seen is containing(pat=tag)) %}
+            {% set_global seen = seen ~ "|" ~ tag ~ "|" %}
             <button class="story-filter-btn" data-filter="{{ tag }}">{{ tag }}</button>
           {% endif %}
         {% endfor %}
@@ -17,8 +17,10 @@
     </div>
   </div>
   <div class="story-grid" id="story-grid">
-    {% for page in remaining %}
-    <article class="story-card{% if loop.index > 3 %} story-card--hidden{% endif %}" data-tags="{{ page.extra.tags | default(value=[]) | join(sep=' ') }}">
+    {% for page in paginator.pages %}
+    {% if not loop.first %}
+    {% set ridx = loop.index - 1 %}
+    <article class="story-card{% if ridx > 3 %} story-card--hidden{% endif %}" data-tags="{{ page.extra.tags | default(value=[]) | join(sep=' ') }}">
       <a href="{{ page.path }}" class="story-card-link-overlay" aria-label="{{ page.title }}"></a>
       <img src="{{ page.extra.image | default(value='/imgs/placeholder.svg') }}" alt="" class="story-card-img">
       <div class="story-card-body">
@@ -33,10 +35,11 @@
         {% endif %}
       </div>
     </article>
+    {% endif %}
     {% endfor %}
   </div>
 
-  {% if remaining | length > 3 %}
+  {% if remaining_count > 3 %}
   <div class="story-grid-more">
     <button class="btn btn-outline" id="load-more-btn" onclick="loadMoreStories()">Load more stories</button>
   </div>

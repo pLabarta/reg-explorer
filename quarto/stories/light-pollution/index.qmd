@@ -34,8 +34,6 @@ that light cost, and who carries the burden.
   night-light than white residents, and Black residents are **more than twice as likely** to live in the
   brightest fifth of the region. Here the axis of inequity is **race and urban density, not income**, which mirrors the first national environmental-justice study of light pollution [@nadybal2020].
 
----
-
 ## A pollutant hiding in plain sight
 
 Most pollution announces itself: smog you can smell, water you would not drink. Light pollution is different.
@@ -258,8 +256,6 @@ easy to ignore, and they land first on the region's Black, Hispanic, and Asian r
 concentrated where the ground glows most. None of this is inevitable. Light pollution is the rare
 environmental harm that can be undone almost overnight, one shielded, warmer, well-aimed fixture at a time.
 The dark is not gone. It is only switched on.
-
----
 
 ## Data and methods {#data-and-methods}
 

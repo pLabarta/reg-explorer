@@ -1,7 +1,8 @@
 <div class="section-cards-block">
   <p class="eyebrow">Explore the region through</p>
   <div class="story-grid">
-    {% for s in section.extra.sections | slice(end=3) %}
+    {% for s in section.extra.sections %}
+    {% if loop.index > 3 %}{% break %}{% endif %}
     <article class="section-nav-card">
       <a href="/{{ s.slug }}/" class="story-card-link-overlay" aria-label="{{ s.title }}"></a>
       <div class="section-nav-card-body">

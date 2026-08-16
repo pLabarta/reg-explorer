@@ -17,11 +17,13 @@
   height: calc(100vh - 4rem);
   height: calc(100svh - 4rem);
   overflow: hidden;
-  // Full-width stage (override .page-content/.container constraints) so a scene
-  // can span edge-to-edge without being clipped. Reading width is restored on
-  // the scene content below.
-  max-width: none;
-  padding: 0;
+  // Same width/centering as the site's .container (the top nav) — the
+  // content sits inside that column rather than spanning edge-to-edge.
+  // The Contents button (.scrolly-contents-btn) is `position: fixed` to the
+  // viewport, not the stage, so it's unaffected by this and stays put.
+  max-width: $max-w;
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
 
 .scrolly-scene {
@@ -51,6 +53,92 @@
 // figure scenes a wider container — still bounded so it doesn't span the stage.
 .scrolly-scene--fig > * {
   max-width: 900px;
+}
+
+// ---- Split layout (wide desktop only) ----
+// static/scrolly/scrolly.js pulls figures/tables out of the one-at-a-time
+// text flow above this width and pins whichever one the current paragraph
+// references in a second column, synced automatically — see WIDE_QUERY there
+// (must match this breakpoint). Below it, or on a story with no figures/
+// tables, the JS never adds `.scrolly-stage--split` and this block is inert.
+@media (min-width: 1200px) {
+  #scrolly-story.scrolly-stage--split {
+    display: flex;
+    align-items: stretch;
+  }
+
+  // Each column is its own positioning context — `.scrolly-scene` inside it
+  // is absolutely positioned relative to *this*, not the full-width stage,
+  // so the two decks' scenes stay confined to their own half.
+  .scrolly-text-col,
+  .scrolly-media-col {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  // 1/3 text, 2/3 figure — both columns start from a zero basis, so the
+  // grow ratio (1:2) is the only thing deciding the split regardless of width.
+  .scrolly-text-col {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  // The paper background lives on the column itself, not on individual
+  // figures/tables (see .quarto-story figure in main.scss) — so the whole
+  // 2/3 panel reads as one continuous surface behind whatever chart is
+  // currently pinned there, rather than a small boxed card around just the
+  // image.
+  // Opacity is the only thing that animates here, and it's timed by
+  // scrolly.js to run *with* the text deck's own fade — fading out
+  // alongside the leaving text, fading in alongside the entering text —
+  // rather than a silent instant switch. Width has no transition: it's an
+  // instant snap, timed by scrolly.js to land only once opacity has
+  // already reached 0, so the resize itself is never visible.
+  .scrolly-media-col {
+    flex: 2 1 0;
+    min-width: 0;
+    background: $paper;
+    opacity: 1;
+    transition: opacity 0.5s ease;   // must match scrolly.js's DURATION
+  }
+
+  // Charts need the room, not the padding — trim the shared .scrolly-scene
+  // gutter way down inside the media panel specifically (the text column
+  // keeps its normal reading-friendly padding).
+  .scrolly-media-col .scrolly-scene {
+    padding: 1rem 0.75rem;
+  }
+
+  // Two independent states, deliberately split into two classes so their
+  // timing can differ (see syncMedia/revealMedia/hideMedia in scrolly.js):
+  //
+  // --media-hidden: opacity only. Applied/removed exactly when the fade
+  // should start, so it transitions smoothly in sync with the text deck.
+  //
+  // --media-collapsed: width only (resets the whole `flex` shorthand, not
+  // just flex-basis — flex-grow staying positive would otherwise still
+  // pull width away from the text column even at basis 0). No transition,
+  // and always toggled once opacity has already finished animating to 0,
+  // so the resize itself is never visible. !important guards this narrow,
+  // deliberate reset against the base rule's shorthand regardless of
+  // specificity ordering.
+  .scrolly-stage--media-hidden .scrolly-media-col {
+    opacity: 0 !important;
+    pointer-events: none;
+  }
+  .scrolly-stage--media-collapsed .scrolly-media-col {
+    flex: 0 0 0 !important;
+    min-width: 0 !important;
+  }
+
+  // The media column is narrower than the old full-bleed figure width, so it
+  // is the width constraint now — scoped to split mode so narrow-mode's
+  // existing 900px single-column figure scenes (`.scrolly-scene--fig`,
+  // above) are untouched.
+  .scrolly-stage--split .scrolly-media-col .scrolly-scene > * {
+    max-width: 100%;
+  }
 }
 
 // ---- End card (final scene; reuses the site footer partial) ----
