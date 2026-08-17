@@ -4,6 +4,12 @@
   position: sticky;
   top: 0;
   z-index: 100;
+
+  // Matches crxp's and the wellbeing dashboard's embed-view nav width (--maxw: 78rem)
+  // so the top nav lines up with the map/survey iframes it hosts.
+  .container {
+    max-width: 78rem;
+  }
 }
 
 .nav {
