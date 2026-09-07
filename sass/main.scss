@@ -937,7 +937,7 @@ a {
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 
   &:hover { background: $border; }
-  &.is-active { background: $black; color: #fff; border-color: $black; }
+  &.is-active { background: $black; color: $white; border-color: $black; }
 }
 
 
