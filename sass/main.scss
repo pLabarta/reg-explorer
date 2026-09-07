@@ -366,7 +366,18 @@ a {
 .home-about-wrap {
   background: $warm-gray-light;
 
-  &--accent { background: $accent-light; }
+  &--accent { background: $accent; }
+  &--accent-dark {
+    background: $accent-dark;
+
+    .home-about-title,
+    .home-about-body p { color: $white; }
+    .eyebrow { color: $white; }
+    .inline-link {
+      color: $white;
+      &:hover { color: $white; }
+    }
+  }
   &--paper { background: $paper; }
 }
 
@@ -1024,7 +1035,7 @@ a {
 
 // ---- Footer ----
 .site-footer {
-  background: $accent-dark;
+  background: $accent-darkest;
   color: $white;
   font-family: $font;
   font-weight: 400;

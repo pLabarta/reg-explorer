@@ -11,13 +11,14 @@
 </div>
 
 {% set about_data = section.extra.section_about %}
+{% set about_bg = "accent" %}
 {% include "partials/homepage/home_about.html" %}
 
 {% set two_images_imgs = section.extra.two_images | default(value=[]) %}
 {% include "partials/two_images.html" %}
 
 {% set about_data = section.extra.section_cta %}
-{% set about_bg = "accent" %}
+{% set about_bg = "accent-dark" %}
 {% include "partials/homepage/home_about.html" %}
 
 {% set three_images_imgs = section.extra.three_images | default(value=[]) %}

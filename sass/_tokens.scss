@@ -11,9 +11,10 @@ $paper:            #F7F4ED;
 $warm-gray-dark:   #8A857A;
 $warm-gray:        #ACA493;
 $warm-gray-light:  #E2DDD2;
-$accent-dark:      #493843;
-$accent:           #DBFF85;
-$accent-light:     #D7EBBA;
+$accent-darkest:   #101820;
+$accent-dark:      #4C5D38;
+$accent:           #E0ECAD;
+$accent-light:     #F3E5AB;
 
 // ── Data-viz palette ─────────────────────────────────────────
 // Colors for chart scales, consumed by Quarto stories via _tokens.R → _setup.R
