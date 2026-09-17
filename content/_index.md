@@ -6,7 +6,7 @@ description = "Data-driven insights for communities across North and South Carol
 # Hero section (left column: title + subtitle + CTA; right column: image)
 hero_title = "Good decisions about places start with understanding them"
 hero_desc = "Explore demographics, well-being, and community trends across North and South Carolina through interactive maps, surveys, and data stories."
-hero_img = "/imgs/region.png"    # path relative to /static
+hero_img = "/imgs/CUI_RegionalExplorer_Map_Black.png"    # path relative to /static
 # hero_img_label = "Map of the region"  # optional caption shown bottom-left of the image
 
 # Two-images band (full-bleed, below the about section) — two half-width images
