@@ -1,0 +1,99 @@
+{
+  "region_canopy_2015": 44.11,
+  "region_canopy_2023": 43.5,
+  "region_change_pts": -0.61,
+  "region_rel_change_pct": -1.4,
+  "n_tracts": 752,
+  "share_losing": 44.7,
+  "share_gaining": 55.3,
+  "share_loss_gt3": 11.7,
+  "median_change": 0.28,
+  "mean_change": 0.0,
+  "counties_worst": [
+    {
+      "county": "Lancaster County",
+      "change": -3.86
+    },
+    {
+      "county": "Anson County",
+      "change": -1.94
+    },
+    {
+      "county": "York County",
+      "change": -1.11
+    }
+  ],
+  "counties_best": [
+    {
+      "county": "Gaston County",
+      "change": 0.31
+    },
+    {
+      "county": "Catawba County",
+      "change": 0.42
+    },
+    {
+      "county": "Cleveland County",
+      "change": 1.29
+    }
+  ],
+  "corr_change_newhomes": [
+    -0.337,
+    -0.299,
+    748
+  ],
+  "corr_change_devchange": [
+    -0.346,
+    -0.207,
+    752
+  ],
+  "corr_change_impchange": [
+    -0.5,
+    -0.401,
+    752
+  ],
+  "newhomes_top_quartile_change": -1.33,
+  "newhomes_bot_quartile_change": 0.91,
+  "newhomes_q75": 22.4,
+  "urban_threshold_density": 500.0,
+  "urban_tracts": 554,
+  "excluded_rural_tracts": 198,
+  "income_terciles": [
+    {
+      "group": "Lower income",
+      "tracts": 185,
+      "med_income": 51168,
+      "canopy15": 36.9,
+      "canopy23": 37.36,
+      "change": 0.71,
+      "share_losing": 31.4
+    },
+    {
+      "group": "Middle income",
+      "tracts": 184,
+      "med_income": 80951,
+      "canopy15": 38.65,
+      "canopy23": 38.28,
+      "change": -0.03,
+      "share_losing": 42.9
+    },
+    {
+      "group": "Higher income",
+      "tracts": 185,
+      "med_income": 126350,
+      "canopy15": 40.68,
+      "canopy23": 39.79,
+      "change": -0.26,
+      "share_losing": 49.2
+    }
+  ],
+  "equity_gap_2023_pts": 2.4,
+  "corr_canopy_income_urban": 0.095,
+  "corr_change_income_urban": -0.135,
+  "corr_change_black": [
+    0.045,
+    0.08,
+    750
+  ],
+  "corr_canopy23_black": -0.084
+}

@@ -3,12 +3,50 @@
     <p class="eyebrow">{{ config.extra.newsletter.eyebrow }}</p>
     <div class="newsletter-row">
       <h2 class="newsletter-title">{{ config.extra.newsletter.title }}</h2>
-      <form class="newsletter-form" action="#" method="post">
+      {% if config.extra.newsletter.mailchimp_action %}
+      <form class="newsletter-form" action="{{ config.extra.newsletter.mailchimp_action }}" method="post" target="_blank" novalidate>
+        <div class="newsletter-form-row">
+          <input class="newsletter-input" type="email" name="EMAIL" placeholder="Your email address" required>
+          <button class="btn btn-primary" type="submit">{{ config.extra.newsletter.button }}</button>
+        </div>
+        {# Mailchimp bot honeypot: real users never see or fill this field. #}
+        <div style="position: absolute; left: -5000px;" aria-hidden="true">
+          <input type="text" name="{{ config.extra.newsletter.mailchimp_honeypot }}" tabindex="-1" value="">
+        </div>
+      </form>
+      {% else %}
+      {# No mailchimp action configured: render a working-looking form that
+         validates and confirms locally without sending anything anywhere. #}
+      <form class="newsletter-form" data-newsletter-demo method="post" action="#">
         <div class="newsletter-form-row">
           <input class="newsletter-input" type="email" name="email" placeholder="Your email address" required>
           <button class="btn btn-primary" type="submit">{{ config.extra.newsletter.button }}</button>
         </div>
+        <p class="newsletter-success" role="status" hidden>Thanks! You&rsquo;re on the list.</p>
       </form>
+      <script>
+        (function () {
+          var form = document.currentScript.previousElementSibling;
+          if (!form || !form.hasAttribute('data-newsletter-demo')) { return; }
+          var row = form.querySelector('.newsletter-form-row');
+          var input = form.querySelector('.newsletter-input');
+          var button = form.querySelector('button[type="submit"]');
+          var success = form.querySelector('.newsletter-success');
+          form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (!form.reportValidity()) { return; }
+            button.disabled = true;
+            input.disabled = true;
+            button.textContent = '…';
+            // Simulate a network round-trip for a realistic feel.
+            setTimeout(function () {
+              row.hidden = true;
+              success.hidden = false;
+            }, 600);
+          });
+        })();
+      </script>
+      {% endif %}
     </div>
   </div>
 </div>

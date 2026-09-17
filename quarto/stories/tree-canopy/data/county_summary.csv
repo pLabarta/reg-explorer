@@ -1,0 +1,15 @@
+county,tracts,canopy15,canopy23,change,mean_tract_change
+Lancaster County,22,57.11,53.25,-3.86,-3.38
+Anson County,9,57.25,55.31,-1.94,-1.19
+York County,55,50.01,48.9,-1.11,-1.0
+Union County,48,31.11,30.38,-0.73,-0.18
+Mecklenburg County,305,40.39,39.79,-0.6,0.1
+Rowan County,31,38.96,38.56,-0.4,-0.01
+Iredell County,46,37.01,36.75,-0.27,-0.09
+Cabarrus County,47,39.87,39.7,-0.16,0.22
+Chester County,11,61.64,61.52,-0.13,-0.06
+Stanly County,17,37.9,37.92,0.03,0.3
+Lincoln County,18,38.55,38.85,0.3,0.49
+Gaston County,85,45.55,45.86,0.31,0.37
+Catawba County,34,35.68,36.11,0.42,0.96
+Cleveland County,24,37.74,39.04,1.29,1.61

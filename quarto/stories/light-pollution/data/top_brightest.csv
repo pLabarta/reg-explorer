@@ -1,0 +1,13 @@
+geoid,label,county,rad14,rad24,change,income,poverty,poc,density,pop
+37119000103,Fourth Ward / Gateway / Uptown,Mecklenburg County,140.4,220,79.6,135533,0,46.5,27967.7,1938
+37119000102,Third Ward / Uptown,Mecklenburg County,145.5,219.6,74.1,129693,7.4,38.8,15413.5,2951
+37119000104,First Ward / Uptown,Mecklenburg County,161.9,213,51.1,109805,8.2,31.8,8245.3,1948
+37119000101,Second Ward / Uptown,Mecklenburg County,138.5,167,28.5,106601,13.6,43,5078.2,1280
+37119000503,Fourth Ward / First Ward,Mecklenburg County,116,130.3,14.3,72155,17.9,49.2,9135.7,1680
+37119000501,Third Ward / Gateway,Mecklenburg County,97.7,130.1,32.4,81696,14.7,56.3,6058.8,2129
+37119000600,First Ward area,Mecklenburg County,124.2,117.5,-6.7,80341,25.2,61.9,9223.8,3826
+37119980300,Midtown / Second Ward,Mecklenburg County,103.8,94.6,-9.1,NA,0,0,140.6,26
+37119000502,Gateway / Fourth Ward,Mecklenburg County,85.7,89.8,4.1,90463,11.4,38.1,6857.5,1781
+37119000402,South End / Third Ward / Wilmore,Mecklenburg County,86.7,86.3,-0.5,74296,7.9,13.9,5961,2364
+37119000401,South End / Second Ward,Mecklenburg County,76.5,81.2,4.7,92500,7.3,17,12563.2,1667
+37119002500,Elizabeth area,Mecklenburg County,88.1,78.4,-9.7,105114,4.5,19.3,3733,2209

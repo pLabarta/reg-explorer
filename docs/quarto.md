@@ -1,6 +1,6 @@
 # Authoring a Quarto data story
 
-_Last updated: 2026-07-06_
+_Last updated: 2026-08-11_
 
 > **Who this is for:** authors of a data story whose charts, maps, and tables are generated
 > from analysis code. Assumes you're comfortable with Quarto, R or Python, and the command
@@ -190,9 +190,58 @@ Both kinds work and are inlined by `embed-resources`, so the fragment stays self
 - **Pre-rendered images:** `knitr::include_graphics("output/figures/fig1.png")` (relative path).
 - **Interactive widgets:** plotly and leaflet render inline.
 
+### Title, description, reading tip, and alt text
+
+A pre-rendered image inserted with Markdown syntax can carry four distinct pieces of text,
+each with a different job. Set all four — they're cheap to write and each one is used
+somewhere:
+
+```md
+![Regional tree canopy, area-weighted across all tracts, 2015–2023.](figures/fig1_region_trend.png "Canopy trend, 2015–2023"){#fig-trend fig-scap="The y-axis is zoomed in to show the trend clearly — the visible dip is a real half-point decline across a 44%-canopy region." fig-alt="Line chart of regional tree canopy percentage from 2015 to 2023, showing a peak in 2016 followed by a steady decline to 43.5 percent by 2023." width=80%}
+```
+
+| Field | Syntax | Purpose |
+|---|---|---|
+| **Title** | the quoted string after the image path, `(path "…")` | A short name for the figure. Not shown in the figure itself — Quarto renders it as the `<img>`'s `title` attribute, and the site's scrollytelling nav (`static/scrolly/scrolly.js`) reads that to label this figure's entry in the contents drawer, e.g. "Figure: Canopy trend, 2015–2023". Keep it to a few words. |
+| **Description** | the bracketed `![…]` text (`fig-cap`) | The full caption, rendered visibly under the figure. Write it as a sentence a reader skimming past the chart would want. |
+| **Reading tip** | `fig-scap="…"` | A short note on *how to read* the chart — a scale quirk, what a color means, which panel to compare against which. Not rendered visually; not shown in the figure or the nav. Despite the name, this project does not use `fig-scap` for its Quarto-standard purpose (a List-of-Figures short caption) — it's repurposed as a reading-tip slot. |
+| **Alt text** | `fig-alt="…"` | Screen-reader-only description of what the chart shows — never rendered visually. Describe the shape of the data (trend, comparison, distribution), not just what type of chart it is: "line chart declining from 44% to 43.5%" beats "a line chart". |
+
+If a figure has no title set, the nav drawer falls back to `fig-scap`, then the full caption,
+then the figure's id — so the title is optional but recommended once a caption gets long
+enough that it's awkward as a nav label.
+
+For figures built with code chunks (`#| label:`/`#| fig-cap:`, see [§3](#3-setup-chunk-and-design-tokens)),
+the same fields apply via chunk options: `#| label: fig-trend`, `#| fig-cap: "…"`,
+`#| fig-scap: "…"` (reading tip), `#| fig-alt: "…"`. Chunk options have no equivalent to the
+Markdown-image title string, so for code-chunk figures the nav falls back to `fig-scap`.
+
 For visual parity with the site, color charts with the tokens from `_setup.R` (or
 `zola_style()` for plotly). **Pre-baked PNGs keep whatever palette they were generated
 with** — if you want them on-brand, regenerate them using the site tokens.
+
+### Wide-desktop split view: the referenced figure follows the paragraph
+
+On a wide desktop viewport (1200px and up), the scrollytelling stepper (`static/scrolly/scrolly.js`)
+splits into two columns: your prose steps one paragraph at a time on the left, exactly as
+before, while whichever figure or table the *current* paragraph's `@fig-id`/`@tbl-id`
+cross-reference points at is pinned in a synced panel on the right — updating automatically as
+the reader advances. On narrower screens, or a story with no figures/tables at all, this is
+inert and every block (including figures/tables) is still its own full-screen stop, as before.
+
+**No new syntax is needed** — the existing cross-reference convention (`@fig-trend`, `@tbl-losers`)
+already provides the pairing signal; Quarto's rendered `<a class="quarto-xref" href="#fig-trend">`
+links in your prose are what the JS reads.
+
+The one authoring rule this adds: **reference at most one figure or table per paragraph.** Only
+the *first* `@fig-`/`@tbl-` reference in a paragraph is used to pick what's pinned — if a
+paragraph mentions two, only the first pairs correctly and the browser console logs a warning.
+Both stories already follow this pattern naturally; if a section needs to discuss two figures,
+give each its own paragraph.
+
+A figure or table that no paragraph ever references still renders (reachable via the Contents
+drawer, and included in the narrow-mode flow) but logs a console warning, since it likely means
+a `@fig-`/`@tbl-` reference was dropped or never added.
 
 ## 6. Package dependencies
 

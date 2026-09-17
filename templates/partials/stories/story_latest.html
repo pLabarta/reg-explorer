@@ -5,7 +5,7 @@
   <p class="eyebrow">Latest story</p>
   <div class="story-latest">
     <div class="story-latest-img">
-      <img src="/imgs/placeholder.svg" alt="" class="hero-img">
+      <img src="{{ latest.extra.image | default(value='/imgs/placeholder.svg') }}" alt="" class="hero-img">
     </div>
     <div class="story-latest-body">
       <h2 class="story-latest-title">

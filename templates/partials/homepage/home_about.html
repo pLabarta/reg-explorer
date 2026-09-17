@@ -1,6 +1,6 @@
 {# Reusable "about"-style section. Caller may set:
    - `about_data`: object with eyebrow/title/body/link/link_label (defaults to section.extra.section_about)
-   - `about_bg`:   background modifier — "accent", "paper", or "" (default warm-gray-light) #}
+   - `about_bg`:   background modifier — "accent", "accent-dark", "paper", or "" (default warm-gray-light) #}
 {% set data = about_data | default(value=section.extra.section_about) %}
 {% set bg = about_bg | default(value="") %}
 <div class="home-about-wrap{% if bg %} home-about-wrap--{{ bg }}{% endif %}">

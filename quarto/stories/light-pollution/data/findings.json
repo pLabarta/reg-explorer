@@ -1,0 +1,104 @@
+{
+  "n_tracts": 752,
+  "pop_wt_rad_2014": 14.52,
+  "pop_wt_rad_2019": 13.89,
+  "pop_wt_rad_2024": 15.34,
+  "pop_wt_change": 0.82,
+  "pop_wt_pct": 5.6,
+  "median_rad_2024": 11.95,
+  "median_rad_2014": 10.69,
+  "brightest_rad": 220,
+  "darkest_rad": 0.26,
+  "ratio_bright_dark": 857,
+  "share_tracts_brighter": 63.4,
+  "county_brightest": [
+    {
+      "county": "Mecklenburg County",
+      "rad24": 26.63
+    },
+    {
+      "county": "Cabarrus County",
+      "rad24": 11.89
+    },
+    {
+      "county": "York County",
+      "rad24": 11.55
+    }
+  ],
+  "total_pop": 3097622,
+  "pop_brightest_quintile": 508392,
+  "share_above_median": 46.7,
+  "equity": [
+    {
+      "group": "All residents",
+      "exposure": 15.34,
+      "vs_white": 1.23
+    },
+    {
+      "group": "White",
+      "exposure": 12.47,
+      "vs_white": 1
+    },
+    {
+      "group": "Black",
+      "exposure": 20.04,
+      "vs_white": 1.61
+    },
+    {
+      "group": "Hispanic",
+      "exposure": 19.65,
+      "vs_white": 1.58
+    },
+    {
+      "group": "Asian",
+      "exposure": 19.56,
+      "vs_white": 1.57
+    },
+    {
+      "group": "Below poverty",
+      "exposure": 17.37,
+      "vs_white": 1.39
+    },
+    {
+      "group": "Children (<18)",
+      "exposure": 14.4,
+      "vs_white": 1.15
+    },
+    {
+      "group": "Older adults (65+)",
+      "exposure": 12.43,
+      "vs_white": 1
+    }
+  ],
+  "income_exposure": [
+    {
+      "inc_t": "Lower income",
+      "tracts": 249,
+      "med_income": 51718,
+      "exposure": 17.43
+    },
+    {
+      "inc_t": "Middle income",
+      "tracts": 248,
+      "med_income": 75647,
+      "exposure": 13.24
+    },
+    {
+      "inc_t": "Higher income",
+      "tracts": 249,
+      "med_income": 117250,
+      "exposure": 15.53
+    }
+  ],
+  "bright_share": {
+    "all": 16.4,
+    "white": 10.6,
+    "black": 26.5,
+    "hisp": 25.7,
+    "poverty": 22.5
+  },
+  "corr_rad_poc": 0.536,
+  "corr_rad_income": -0.027,
+  "corr_rad_poverty": 0.064,
+  "corr_rad_density": 0.816
+}

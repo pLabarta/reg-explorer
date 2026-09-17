@@ -11,15 +11,33 @@ $paper:            #F7F4ED;
 $warm-gray-dark:   #8A857A;
 $warm-gray:        #ACA493;
 $warm-gray-light:  #E2DDD2;
-$accent-dark:      #493843;
-$accent:           #DBFF85;
-$accent-light:     #D7EBBA;
+$accent-darkest:   #101820;
+$accent-dark:      #4C5D38;
+$accent:           #E0ECAD;
+$accent-light:     #F3E5AB;
 
 // ── Data-viz palette ─────────────────────────────────────────
 // Colors for chart scales, consumed by Quarto stories via _tokens.R → _setup.R
 // helpers (cat_pal() etc.). Any $viz-* token whose value is a comma-separated
 // list of hex colors is emitted to R as a c(...) vector by build-stories.sh.
 $viz-categorical: #B4CDED, #D7EBBA, #CF5C36, #493843, #8A857A;
+
+// Storytelling palette (shared with crxp/dashboard --c-story-cat-*/--c-story-div-*;
+// see crxp/COLORS.md §6a). Sequential still pending.
+$viz-story-categorical: #F3E5AB, #4C5D38, #101820, #802F2D, #007377;
+
+// Diverging ramps: pole, mid, neutral, mid, pole.
+$viz-story-div-redgreen:   #802F2D, #C08A87, #F3E5AB, #8B9977, #4C5D38;
+$viz-story-div-browngreen: #493843, #9F8A95, #F0F0F0, #B9BFB1, #505C41;
+$viz-story-div-tealbrown:  #007377, #ADC9CA, #F0F0F0, #C9B9C1, #493843;
+
+// Sequential ramps: 5 stops, light -> dark. Intermediate stops may be
+// interpolated between the first and last when needed.
+$viz-story-seq-green:        #EDEEEC, #B9BFB1, #859472, #505C41, #1A1F14;
+$viz-story-seq-teal:         #EEF2F2, #ADC9CA, #63A9AB, #337173, #102C2D;
+$viz-story-seq-earthpurple:  #EFE9EC, #C9B9C1, #9F8A95, #6E5C68, #493843;
+$viz-story-seq-red:          #F2EEEE, #C9B0B0, #A84C6A, #733A39, #311514;
+$viz-story-seq-gray:         #F0F0F0, #BEBDBC, #8C8B89, #595956, #262624;
 
 // Sequential ramps (light → dark), one per hue.
 $viz-seq-plum:    #EFE9EC, #C9B9C1, #9F8A95, #6E5C68, #493843;

@@ -125,7 +125,11 @@ fm_value() {
   ' "$1"
 }
 
-# Create a Zola companion stub for a story if one does not already exist.
+# Create a Zola companion stub for a story if one does not already exist. When
+# re-run with --force on an existing stub, the [extra] block (tags, author,
+# read_time, image, ...) is manually curated after generation, so it is carried
+# over verbatim rather than regenerated — only title/date/description, which come
+# straight from the qmd front matter, are refreshed.
 #   $1 = qmd path   $2 = slug
 generate_stub() {
   local qmd="$1" slug="$2"
@@ -135,24 +139,26 @@ generate_stub() {
     return
   fi
   local rel="${qmd#"$QUARTO_DIR"/}"
-  local title desc date author
+  local title desc date extra
   title="$(fm_value "$qmd" title)";       [ -n "$title" ] || title="$slug"
   desc="$(fm_value "$qmd" description)"
   date="$(fm_value "$qmd" date)"
-  author="$(fm_value "$qmd" author)"
+  if [ -f "$stub" ]; then
+    extra="$(awk '/^\[extra\]/{f=1} f && !/^\+\+\+[[:space:]]*$/{print}' "$stub")"
+  else
+    extra=$'[extra]\ntags = []'
+  fi
   {
     echo "+++"
     echo "# Auto-generated companion stub for a Quarto data story (scripts/build-stories.sh)."
     echo "# Body is authored in quarto/${rel} and embedded via quarto_story.html."
-    echo "# Edit tags/read_time as needed."
+    echo "# Edit tags/read_time/image as needed."
     echo "title = \"${title}\""
     [ -n "$date" ] && echo "date = ${date}"
     [ -n "$desc" ] && echo "description = \"${desc}\""
     echo "template = \"quarto_story.html\""
     echo ""
-    echo "[extra]"
-    echo "tags = []"
-    [ -n "$author" ] && echo "author = \"${author}\""
+    printf '%s\n' "$extra"
     echo "+++"
   } > "$stub"
   echo "  wrote stub: content/stories/${slug}.md"
