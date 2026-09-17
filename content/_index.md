@@ -4,8 +4,8 @@ description = "Data-driven insights for communities across North and South Carol
 
 [extra]
 # Hero section (left column: title + subtitle + CTA; right column: image)
-hero_title = "Good decisions about places start with understanding them"
-hero_desc = "Explore demographics, well-being, and community trends across North and South Carolina through interactive maps, surveys, and data stories."
+hero_title = "A big, clear headline for the home page"
+hero_desc = "A supporting sentence below the headline."
 hero_img = "/imgs/region.png"    # path relative to /static
 # hero_img_label = "Map of the region"  # optional caption shown bottom-left of the image
 
@@ -17,9 +17,9 @@ three_images = ["/imgs/photo-3.png", "/imgs/photo-4.png", "/imgs/photo-5.png"]
 
 # Cards grid shown below the hero — each entry maps to a site section
 sections = [
-  { title = "Regional Map", slug = "map", description = "Explore quality-of-life indicators across every neighborhood in the region..", button = "Explore the map" },
-  { title = "Wellbeing Survey", slug = "survey", description = "Some text describing the survey and what kind of data it is possible to find here.", button = "See the results" },
-  { title = "Data Stories", slug = "stories", description = "Another small text that introduces the concept of the data stories and what they are.", button = "Read stories" }
+  { title = "Regional Map", slug = "map", description = "A sentence describing the map.", button = "Explore the map" },
+  { title = "Wellbeing Survey", slug = "survey", description = "A sentence describing the survey.", button = "See the results" },
+  { title = "Data Stories", slug = "stories", description = "A sentence describing the data stories.", button = "Read stories" }
 ]
 
 [extra.section_about]
